@@ -11,6 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -19,7 +20,7 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: url('https://i.pinimg.com/1200x/c3/c1/d8/c3c1d86a7345f85a2a1b44a0f47a1852.jpg?w=1920') no-repeat center center fixed;
             background-size: cover;
             min-height: 100vh;
@@ -31,7 +32,7 @@
             width: 100%;
         }
         
-        /* Overlay pour assombrir légèrement le fond */
+        /* Overlay élégant */
         body::before {
             content: "";
             position: fixed;
@@ -39,7 +40,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 100%);
             z-index: -1;
         }
         
@@ -51,21 +52,23 @@
             overflow-x: hidden;
         }
         
+        /* ========== HEADER MODERNE ========== */
         .header {
-            background: white;
-            border-radius: 15px;
-            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px 25px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
-            width: 100%;
+            transition: all 0.3s ease;
         }
         
-        /* STYLE DU LOGO AVEC IMAGE */
+        /* LOGO */
         .logo {
             display: flex;
             align-items: center;
@@ -73,16 +76,21 @@
         }
         
         .logo-image {
-            width: 60px;
-            height: 60px;
+            width: 55px;
+            height: 55px;
             object-fit: cover;
             border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(230,126,34,0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-image:hover {
+            transform: scale(1.05);
         }
         
         .logo-nom {
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 800;
             background: linear-gradient(135deg, #e67e22, #d35400);
             -webkit-background-clip: text;
             background-clip: text;
@@ -94,10 +102,10 @@
             font-size: 10px;
             color: #e67e22;
             margin-top: 2px;
-            letter-spacing: 0.5px;
+            font-weight: 500;
         }
         
-        /* MENU CENTRAL (Connexion et Inscription) */
+        /* MENU UTILISATEUR */
         .user-menu-center {
             display: flex;
             align-items: center;
@@ -111,12 +119,12 @@
         
         .user-name {
             color: #e67e22;
-            font-weight: bold;
+            font-weight: 600;
             background: white;
             padding: 6px 15px;
             border-radius: 25px;
             font-size: 14px;
-            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .btn-connexion, .btn-inscription, .btn-deconnexion, .btn-profil {
@@ -124,61 +132,47 @@
             border-radius: 25px;
             text-decoration: none;
             transition: all 0.3s;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 14px;
             display: inline-block;
-            white-space: nowrap;
         }
         
-        .btn-connexion {
-            background: #e67e22;
-            color: white;
-        }
-        
-        .btn-inscription {
-            background: #27ae60;
-            color: white;
-        }
-        
-        .btn-deconnexion {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        .btn-profil {
-            background: #3498db;
-            color: white;
-        }
+        .btn-connexion { background: #e67e22; color: white; box-shadow: 0 2px 8px rgba(230,126,34,0.3); }
+        .btn-inscription { background: #27ae60; color: white; box-shadow: 0 2px 8px rgba(39,174,96,0.3); }
+        .btn-deconnexion { background: #e74c3c; color: white; }
+        .btn-profil { background: #3498db; color: white; box-shadow: 0 2px 8px rgba(52,152,219,0.3); }
         
         .btn-connexion:hover, .btn-inscription:hover, .btn-deconnexion:hover, .btn-profil:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            filter: brightness(1.05);
         }
         
-        /* PANIER À DROITE */
         .btn-panier {
             background: linear-gradient(135deg, #e67e22, #d35400);
             color: white;
             padding: 10px 25px;
-            border-radius: 25px;
+            border-radius: 30px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 14px;
-            white-space: nowrap;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(230,126,34,0.4);
         }
         
         .btn-panier:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(230,126,34,0.5);
         }
         
+        /* BARRE DE RECHERCHE */
         .search-bar {
             background: white;
             border-radius: 50px;
-            padding: 10px 20px;
-            margin-bottom: 25px;
+            padding: 8px 20px;
+            margin-bottom: 30px;
             display: flex;
             gap: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            width: 100%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
         
         .search-bar input {
@@ -187,8 +181,8 @@
             border: none;
             border-radius: 25px;
             background: #f5f5f5;
-            font-size: 16px;
-            width: 100%;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
         }
         
         .search-bar input:focus {
@@ -196,37 +190,41 @@
             background: #eee;
         }
         
+        /* CATÉGORIES */
         .categories {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 35px;
             justify-content: center;
         }
         
         .categorie-btn {
-            background: white;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(5px);
             border: none;
             padding: 10px 25px;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             transition: all 0.3s;
             color: #666;
+            font-family: 'Inter', sans-serif;
         }
         
         .categorie-btn.active {
             background: linear-gradient(135deg, #e67e22, #d35400);
             color: white;
             transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(230,126,34,0.4);
         }
         
         .categorie-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
         
-        /* GRILLE : 3 PRODUITS PAR LIGNE */
+        /* GRILLE PRODUITS */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -234,47 +232,32 @@
             animation: fadeIn 0.5s ease;
         }
         
-        @media (min-width: 1400px) {
-            .menu-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        
-        @media (max-width: 900px) {
-            .menu-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 600px) {
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
+        /* CARTES MODERNES */
         .plat-card {
-            background: white;
-            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
         }
         
         .plat-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: translateY(-12px);
+            box-shadow: 0 25px 40px rgba(0,0,0,0.25);
         }
         
         .plat-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            transition: transform 0.3s;
+            transition: transform 0.5s ease;
         }
         
         .plat-card:hover .plat-image {
@@ -287,7 +270,7 @@
         
         .plat-nom {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
             color: #e67e22;
             margin-bottom: 8px;
         }
@@ -296,12 +279,12 @@
             font-size: 13px;
             color: #666;
             margin-bottom: 10px;
-            line-height: 1.4;
+            line-height: 1.5;
         }
         
         .plat-prix {
             font-size: 20px;
-            font-weight: bold;
+            font-weight: 800;
             color: #27ae60;
             margin-bottom: 12px;
         }
@@ -318,42 +301,48 @@
             display: inline-block;
             color: #f39c12;
             font-size: 12px;
+            font-weight: 500;
         }
         
         .btn-avis {
             background: #3498db;
             color: white;
             border: none;
-            padding: 7px 12px;
-            border-radius: 20px;
+            padding: 8px 12px;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 12px;
+            font-weight: 500;
             margin-top: 8px;
             width: 100%;
+            transition: all 0.3s;
         }
         
         .btn-avis:hover {
             background: #2980b9;
+            transform: translateY(-2px);
         }
         
         .quantite-select {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 10px 0;
+            margin: 12px 0;
         }
         
         .quantite-select label {
             font-size: 13px;
             color: #666;
+            font-weight: 500;
         }
         
         .quantite-select input {
             width: 55px;
-            padding: 6px;
+            padding: 8px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: center;
+            font-weight: 500;
         }
         
         .btn-ajouter {
@@ -361,27 +350,28 @@
             background: linear-gradient(135deg, #e67e22, #d35400);
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 25px;
+            padding: 12px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 700;
             transition: all 0.3s;
         }
         
         .btn-ajouter:hover {
             transform: scale(1.02);
-            box-shadow: 0 5px 15px rgba(230,126,34,0.4);
+            box-shadow: 0 5px 20px rgba(230,126,34,0.5);
         }
         
         .no-results {
             text-align: center;
             padding: 50px;
-            background: white;
-            border-radius: 15px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
             color: #666;
         }
         
+        /* MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -390,6 +380,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -397,41 +388,44 @@
         
         .modal-content {
             background: white;
-            padding: 25px;
-            border-radius: 20px;
-            max-width: 400px;
+            padding: 30px;
+            border-radius: 25px;
+            max-width: 450px;
             width: 90%;
             margin: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
         
         .modal-content h3 {
             color: #e67e22;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
+            font-weight: 700;
         }
         
         .modal-content select, .modal-content textarea {
             width: 100%;
-            padding: 10px;
-            margin: 8px 0;
+            padding: 12px;
+            margin: 10px 0;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 14px;
+            font-family: 'Inter', sans-serif;
         }
         
         .modal-buttons {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
         
         .modal-buttons button {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
         }
         
         .btn-submit-avis {
@@ -444,72 +438,87 @@
             color: white;
         }
         
-        /* ========== PIED DE PAGE ========== */
+        /* PIED DE PAGE */
         .footer {
-            background: #1a1a2e;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white;
             margin-top: 50px;
-            padding: 30px 20px 20px;
-            border-radius: 20px 20px 0 0;
-            width: 100%;
+            padding: 40px 20px 20px;
+            border-radius: 30px 30px 0 0;
         }
         
         .footer-container {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
         }
         
         .footer-section h3 {
             color: #e67e22;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             font-size: 18px;
+            font-weight: 700;
         }
         
         .footer-section p {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #ccc;
             font-size: 14px;
+            line-height: 1.6;
         }
         
         .footer-section a {
             color: #e67e22;
             text-decoration: none;
+            transition: all 0.3s;
         }
         
         .footer-section a:hover {
+            color: #f39c12;
             text-decoration: underline;
         }
         
         .social-icons {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             margin-top: 15px;
         }
         
         .social-icons a {
-            background: #e67e22;
-            width: 35px;
-            height: 35px;
+            background: rgba(230,126,34,0.2);
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             font-size: 18px;
+            transition: all 0.3s;
+        }
+        
+        .social-icons a:hover {
+            background: #e67e22;
+            transform: translateY(-3px);
         }
         
         .copyright {
             text-align: center;
-            padding-top: 20px;
-            margin-top: 20px;
-            border-top: 1px solid #333;
+            padding-top: 25px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
             font-size: 12px;
             color: #888;
         }
         
-        /* ========== RESPONSIVE MOBILE ========== */
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 900px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -534,28 +543,20 @@
                 font-size: 18px;
             }
             
-            /* Centre le menu utilisateur sur mobile */
             .user-menu-center {
-                justify-content: center;
                 width: 100%;
                 padding: 10px 15px;
                 flex-wrap: wrap;
             }
             
-            .user-name {
-                white-space: normal;
-                word-break: keep-all;
-            }
-            
             .btn-connexion, .btn-inscription, .btn-deconnexion, .btn-profil {
                 padding: 5px 12px;
                 font-size: 12px;
-                white-space: nowrap;
             }
             
-            .btn-panier {
-                width: auto;
-                display: inline-block;
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
             
             .categories {
@@ -577,10 +578,8 @@
             }
         }
         
-        /* Pour les très petits écrans (moins de 480px) */
         @media (max-width: 480px) {
             .user-menu-center {
-                flex-wrap: wrap;
                 gap: 8px;
             }
             
@@ -599,7 +598,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <!-- LOGO À GAUCHE AVEC IMAGE -->
+            <!-- LOGO -->
             <div class="logo">
                 <img src="/images/logo.png" alt="TONKPIRESTO" class="logo-image" onerror="this.src='https://placehold.co/60x60?text=🍕'">
                 <div>
@@ -608,7 +607,7 @@
                 </div>
             </div>
             
-            <!-- MENU CENTRAL : CONNEXION / INSCRIPTION -->
+            <!-- MENU UTILISATEUR -->
             <div class="user-menu-center">
                 <% if (user && user.id) { %>
                     <span class="user-name">👋 Bonjour <%= user.prenom %> <%= user.nom %></span>
@@ -620,14 +619,16 @@
                 <% } %>
             </div>
             
-            <!-- PANIER À DROITE -->
-            <a href="/panier" class="btn-panier">📦 Voir mon panier</a>
+            <!-- PANIER -->
+            <a href="/panier" class="btn-panier">🛒 Mon panier</a>
         </div>
         
+        <!-- RECHERCHE -->
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="🔍 Rechercher un plat..." onkeyup="filterPlats()">
         </div>
         
+        <!-- CATÉGORIES -->
         <div class="categories">
             <button class="categorie-btn <%= categorieActive === 'tous' ? 'active' : '' %>" onclick="filterCategorie('tous')">Tous</button>
             <button class="categorie-btn <%= categorieActive === 'entrees' ? 'active' : '' %>" onclick="filterCategorie('entrees')">🥗 Entrées</button>
@@ -636,6 +637,7 @@
             <button class="categorie-btn <%= categorieActive === 'boissons' ? 'active' : '' %>" onclick="filterCategorie('boissons')">🥤 Boissons</button>
         </div>
         
+        <!-- GRILLE PRODUITS -->
         <div class="menu-grid" id="menuGrid">
             <% plats.forEach(plat => { %>
                 <div class="plat-card" data-nom="<%= plat.nom.toLowerCase() %>" data-categorie="<%= plat.categorie %>" data-id="<%= plat.id %>">
@@ -700,10 +702,11 @@
             </div>
         </div>
         <div class="copyright">
-            &copy; 2024 TONKPIRESTO - Tous droits réservés | Site réalisé avec 🍕 pour vous servir
+            &copy; 2025 TONKPIRESTO - Tous droits réservés | Site réalisé avec 🍕 pour vous servir
         </div>
     </div>
     
+    <!-- MODAL AVIS -->
     <div id="modalAvis" class="modal">
         <div class="modal-content">
             <h3>⭐ Donner mon avis</h3>
