@@ -1,452 +1,226 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>TONKPIRESTO - Mon panier</title>
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#e67e22">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TONKPIRESTO">
-    <link rel="apple-touch-icon" href="/images/logo.png">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+require('dotenv').config();
+const express = require('express');
+const session = require('express-session');
+const fs = require('fs');
+const stripe = require('stripe')('ta_clé_secrète_stripe'); // 🔑 REMPLACE PAR TA VRAIE CLÉ STRIPE
+const { envoyerConfirmationCommande, envoyerEmailBienvenue } = require('./utils/email');
+const app = express();
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #fff5eb 0%, #ffe4d6 100%);
-            color: #1a1a1a;
-            scroll-behavior: smooth;
-        }
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+app.use(session({
+    secret: 'un-secret-tres-securise',
+    resave: false,
+    saveUninitialized: true
+}));
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
+// Middleware pour rendre user disponible dans toutes les vues
+app.use((req, res, next) => {
+    res.locals.user = req.session.user;
+    next();
+});
 
-        /* HEADER (identique à index) */
-        .header {
-            background: white;
-            padding: 16px 0;
-            border-bottom: 1px solid #f0f0f0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
+// Liste des plats (version stable)
+const plats = [
+    { id: 1, nom: 'Pizza Margherita', prix: 5000, description: 'Sauce tomate, mozzarella, basilic frais', image: 'https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?w=300', categorie: 'plats' },
+    { id: 2, nom: 'Burger Classique', prix: 3500, description: 'Steak haché, salade, tomate, oignon, sauce spéciale', image: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?w=300', categorie: 'plats' },
+    { id: 3, nom: 'Salade César', prix: 4000, description: 'Poulet grillé, parmesan, croûtons, sauce césar', image: 'https://images.pexels.com/photos/1211887/pexels-photo-1211887.jpeg?w=300', categorie: 'plats' },
+    { id: 4, nom: 'Pâtes Carbonara', prix: 4500, description: 'Pâtes fraîches, œuf, parmesan, lardons', image: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?w=300', categorie: 'plats' },
+    { id: 5, nom: 'Tiramisu', prix: 2500, description: 'Mascarpone, café, boudoirs, cacao', image: 'https://images.pexels.com/photos/1326946/pexels-photo-1326946.jpeg?w=300', categorie: 'desserts' },
+    { id: 6, nom: "Jus d'Orange Frais", prix: 1500, description: 'Orange pressée maison, sans sucre ajouté', image: 'https://i.pinimg.com/736x/e0/e3/88/e0e38815c2c03be364968870631c8ee1.jpg', categorie: 'boissons' },
+    { id: 7, nom: 'Nems Poulet', prix: 2000, description: '3 pièces, sauce nuoc-mâm', image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?w=300', categorie: 'entrees' },
+    { id: 8, nom: 'Bowl Végétarien', prix: 5500, description: 'Quinoa, avocat, légumes grillés, sauce tahini', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
+    { id: 9, nom: 'Samoussas Légumes', prix: 1800, description: '4 pièces, épices douces', image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?w=300', categorie: 'entrees' },
+    { id: 10, nom: 'Fondant Chocolat', prix: 2200, description: 'Cœur coulant, glace vanille', image: 'https://images.pexels.com/photos/1326946/pexels-photo-1326946.jpeg?w=300', categorie: 'desserts' },
+    { id: 11, nom: 'Coca-Cola', prix: 1000, description: '33cl, bien frais', image: 'https://i.pinimg.com/736x/db/79/a2/db79a22a3565ccf16a6183d8bebdd426.jpg', categorie: 'boissons' },
+    { id: 12, nom: 'Beignets de Poisson (Fataya)', prix: 2500, description: 'Beignets croustillants au thon épicé, sauce piquante', image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?w=300', categorie: 'entrees' },
+    { id: 13, nom: 'Accras de Morue', prix: 2200, description: 'Beignets de morue aux herbes, 6 pièces', image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?w=300', categorie: 'entrees' },
+    { id: 14, nom: 'Brochettes Mafé', prix: 3000, description: 'Brochettes de bœuf sauce arachide, accompagnées de légumes', image: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?w=300', categorie: 'entrees' },
+    { id: 15, nom: 'Mafé Tieb', prix: 6500, description: 'Riz au poulet, sauce arachide, légumes frais', image: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?w=300', categorie: 'plats' },
+    { id: 16, nom: 'Yassa Poulet', prix: 6000, description: 'Poulet mariné aux oignons, citron et moutarde, riz parfumé', image: 'https://images.pexels.com/photos/1211887/pexels-photo-1211887.jpeg?w=300', categorie: 'plats' },
+    { id: 17, nom: 'Alloco Poisson Braisé', prix: 5500, description: 'Banane plantain frite, poisson braisé, sauce tomate', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
+    { id: 18, nom: 'Kédjénou Poulet', prix: 6200, description: 'Poulet mijoté aux légumes, parfumé aux épices', image: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?w=300', categorie: 'plats' },
+    { id: 19, nom: 'Foutou Sauce Gombo', prix: 5800, description: 'Foutou (igname/banane plantain), sauce gombo au poisson', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
+    { id: 20, nom: 'Dessert Bissap', prix: 2000, description: 'Mousse à base de bissap (hibiscus), gingembre, vanille', image: 'https://images.pexels.com/photos/1326946/pexels-photo-1326946.jpeg?w=300', categorie: 'desserts' },
+    { id: 21, nom: 'Beignets de Patate Douce', prix: 1800, description: 'Beignets moelleux à la patate douce, sucre vanillé', image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?w=300', categorie: 'desserts' },
+    { id: 22, nom: 'Jus de Bissap', prix: 1200, description: "Boisson rafraîchissante à l'hibiscus, menthe et gingembre", image: 'https://i.pinimg.com/736x/52/3e/ba/523eba1c9d68905fcc870c35cdce271d.jpg', categorie: 'boissons' },
+    { id: 23, nom: 'Jus de Gingembre', prix: 1200, description: 'Jus pétillant au gingembre frais, citron vert', image: 'https://i.pinimg.com/1200x/9b/42/cd/9b42cd74edec6e31b8ea1ffb42eb8de9.jpg', categorie: 'boissons' },
+    { id: 24, nom: 'Dolo (Bière de Mil)', prix: 1500, description: 'Bière traditionnelle à base de mil, légère et rafraîchissante', image: 'https://i.pinimg.com/1200x/a6/34/d8/a634d82672317cdf1c8ecf9f0f4b6991.jpg', categorie: 'boissons' }
+];
 
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo img {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .logo-text h1 {
-            font-size: 22px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #e67e22, #d35400);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-
-        .logo-text p {
-            font-size: 11px;
-            color: #e67e22;
-            font-weight: 500;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #e67e22;
-            color: #e67e22;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .btn-outline:hover {
-            background: #e67e22;
-            color: white;
-        }
-
-        .cart-icon {
-            background: #f5f5f5;
-            padding: 8px 16px;
-            border-radius: 40px;
-            text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-        }
-
-        .cart-icon:hover {
-            background: #eaeaea;
-        }
-
-        .cart-count {
-            background: #e67e22;
-            color: white;
-            border-radius: 30px;
-            padding: 2px 8px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        /* Contenu principal */
-        .cart-container {
-            background: white;
-            border-radius: 32px;
-            padding: 24px;
-            margin: 32px 0;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-        }
-
-        .cart-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 24px;
-            color: #1a1a1a;
-        }
-
-        .cart-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-            padding: 20px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .item-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            object-fit: cover;
-        }
-
-        .item-details {
-            flex: 2;
-        }
-
-        .item-name {
-            font-weight: 700;
-            font-size: 18px;
-            margin-bottom: 4px;
-        }
-
-        .item-desc {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .item-price {
-            font-weight: 800;
-            color: #e67e22;
-            margin-top: 6px;
-        }
-
-        .item-quantity {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .quantity-input {
-            width: 70px;
-            padding: 8px;
-            border-radius: 40px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        .btn-remove {
-            background: none;
-            border: none;
-            color: #e74c3c;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-remove:hover {
-            text-decoration: underline;
-        }
-
-        .cart-total {
-            text-align: right;
-            font-size: 24px;
-            font-weight: 800;
-            padding: 20px 0;
-            border-top: 2px solid #f0f0f0;
-            margin-top: 12px;
-        }
-
-        .delivery-form {
-            margin-top: 24px;
-        }
-
-        .delivery-form input, .delivery-form textarea {
-            width: 100%;
-            padding: 14px;
-            border-radius: 48px;
-            border: 1px solid #e0e0e0;
-            margin-bottom: 16px;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: #e67e22;
-            color: white;
-            padding: 14px;
-            border-radius: 48px;
-            font-weight: 700;
-            border: none;
-            width: 100%;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-primary:hover {
-            background: #d35400;
-        }
-
-        .separator {
-            text-align: center;
-            margin: 24px 0;
-            position: relative;
-        }
-
-        .separator span {
-            background: white;
-            padding: 0 12px;
-            color: #999;
-        }
-
-        .footer {
-            background: #1a1a2e;
-            color: #ccc;
-            padding: 40px 0 24px;
-            margin-top: 40px;
-            border-radius: 32px 32px 0 0;
-        }
-
-        .footer-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 32px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .footer-logo img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-        }
-
-        .copyright {
-            text-align: center;
-            margin-top: 32px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-            font-size: 12px;
-        }
-
-        @media (max-width: 700px) {
-            .cart-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .header-content {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .user-actions {
-                justify-content: center;
-            }
-        }
-    </style>
-</head>
-<body>
-
-<div class="header">
-    <div class="container header-content">
-        <div class="logo">
-            <img src="/images/logo.png" alt="TONKPIRESTO">
-            <div class="logo-text">
-                <h1>TONKPIRESTO</h1>
-                <p>Le goût des sommets, livré chez vous</p>
-            </div>
-        </div>
-        <div class="user-actions">
-            <% if (user && user.id) { %>
-                <span>👋 <%= user.prenom %></span>
-                <a href="/auth/profil" class="btn-outline">Mon profil</a>
-                <a href="/auth/deconnexion" class="btn-outline">Déconnexion</a>
-            <% } else { %>
-                <a href="/auth/connexion" class="btn-outline">Connexion</a>
-                <a href="/auth/inscription" class="btn-outline">Inscription</a>
-            <% } %>
-            <a href="/panier" class="cart-icon" id="cartLink">
-                🛒 Panier
-                <span id="cartCount" class="cart-count">0</span>
-            </a>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="cart-container">
-        <div class="cart-title">🛒 Mon panier</div>
-
-        <% if (articles.length === 0) { %>
-            <p style="text-align:center; padding: 40px;">🍕 Votre panier est vide.</p>
-            <a href="/" style="display:block; text-align:center;" class="btn-primary">Voir le menu</a>
-        <% } else { %>
-            <% articles.forEach(article => { %>
-                <div class="cart-item" data-id="<%= article.id %>">
-                    <img src="<%= article.image %>" class="item-image" onerror="this.src='https://placehold.co/80x80?text=Plat'">
-                    <div class="item-details">
-                        <div class="item-name"><%= article.nom %></div>
-                        <div class="item-desc"><%= article.description %></div>
-                        <div class="item-price"><%= article.prix.toLocaleString() %> F CFA / unité</div>
-                    </div>
-                    <div class="item-quantity">
-                        <form action="/panier/modifier-quantite/<%= article.id %>" method="POST" style="display: flex; gap: 8px; align-items: center;">
-                            <input type="number" name="quantite" value="<%= article.quantite %>" min="1" max="99" class="quantity-input" onchange="this.form.submit()">
-                        </form>
-                        <form action="/panier/retirer/<%= article.id %>" method="POST">
-                            <button type="submit" class="btn-remove">❌ Retirer</button>
-                        </form>
-                    </div>
-                    <div style="font-weight:800; min-width: 100px; text-align:right;">
-                        <%= article.total.toLocaleString() %> F CFA
-                    </div>
-                </div>
-            <% }) %>
-
-            <div class="cart-total">
-                Total : <span id="totalAmount"><%= total.toLocaleString() %></span> F CFA
-            </div>
-
-            <div class="delivery-form">
-                <h3 style="margin-bottom: 16px;">📝 Informations de livraison</h3>
-                <form action="/valider-commande" method="POST">
-                    <input type="tel" name="telephone" placeholder="📞 Votre numéro de téléphone" required>
-                    <textarea name="adresse" placeholder="🏠 Votre adresse complète" rows="2" required></textarea>
-                    <button type="submit" class="btn-primary">✅ Valider la commande (paiement à la livraison)</button>
-                </form>
-
-                <div class="separator"><span>OU</span></div>
-
-                <form action="/creer-paiement" method="POST">
-                    <button type="submit" class="btn-primary">💳 Payer en ligne (Carte bancaire)</button>
-                </form>
-
-                <div style="background: #fef5e8; border-radius: 32px; padding: 20px; margin-top: 24px;">
-                    <h3 style="margin-bottom: 12px;">💚 Paiement Wave</h3>
-                    <p>Effectuez votre paiement via Wave au <strong>07 48 41 52 86</strong></p>
-                    <button onclick="navigator.clipboard.writeText('0748415286'); alert('Numéro copié')" style="background: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 30px; margin-top: 8px;">📋 Copier le numéro</button>
-                    <form action="/valider-commande-wave" method="POST" style="margin-top: 20px;">
-                        <input type="text" name="transaction_id" placeholder="Numéro de transaction Wave" required>
-                        <input type="tel" name="telephone" placeholder="📞 Votre numéro Wave" required>
-                        <textarea name="adresse" placeholder="🏠 Adresse de livraison" rows="2" required></textarea>
-                        <button type="submit" class="btn-primary">✅ Valider la commande (Wave)</button>
-                    </form>
-                </div>
-            </div>
-        <% } %>
-    </div>
-</div>
-
-<div class="footer">
-    <div class="footer-container">
-        <div class="footer-section">
-            <div class="footer-logo">
-                <img src="/images/logo.png" alt="TONKPIRESTO">
-                <span>TONKPIRESTO</span>
-            </div>
-            <p>Le goût des sommets, livré chez vous</p>
-            <p>Livraison rapide à Abidjan</p>
-        </div>
-        <div class="footer-section">
-            <h3>📞 Contact</h3>
-            <p>📱 <a href="tel:+2250555594062">+225 05 55 59 40 62</a></p>
-            <p>📧 <a href="mailto:contact@tonkpiresto.com">contact@tonkpiresto.com</a></p>
-            <p>🕒 11h - 22h (7j/7)</p>
-        </div>
-        <div class="footer-section">
-            <h3>📍 Adresse</h3>
-            <p>Abidjan, Côte d'Ivoire</p>
-            <p>Livraison dans toute la ville</p>
-        </div>
-    </div>
-    <div class="copyright">
-        © 2025 TONKPIRESTO — Tous droits réservés
-    </div>
-</div>
-
-<script>
-    // Mise à jour du compteur d'articles dans le header (basé sur les articles du panier)
-    function updateCartCount() {
-        fetch('/api/cart-count')
-            .then(res => res.json())
-            .then(data => {
-                const badge = document.getElementById('cartCount');
-                if (badge) badge.innerText = data.count;
-            })
-            .catch(err => console.log("Impossible de récupérer le compteur"));
+// Page d'accueil
+app.get('/', (req, res) => {
+    const categorie = req.query.categorie || 'tous';
+    let platsFiltres = plats;
+    if (categorie !== 'tous') {
+        platsFiltres = plats.filter(p => p.categorie === categorie);
     }
+    res.render('index', { plats: platsFiltres, categorieActive: categorie, user: req.session.user });
+});
 
-    // Appel toutes les 2 secondes pour refléter les ajouts depuis d'autres onglets (optionnel)
-    setInterval(updateCartCount, 2000);
-    updateCartCount();
-</script>
-</body>
-</html>
+// API : nombre total d'articles dans le panier (pour le badge)
+app.get('/api/cart-count', (req, res) => {
+    const panier = req.session.panier || [];
+    let total = 0;
+    for (const item of panier) {
+        total += item.quantite;
+    }
+    res.json({ count: total });
+});
+
+// Ajouter au panier
+app.post('/ajouter-panier', (req, res) => {
+    const platId = parseInt(req.body.id);
+    const quantite = parseInt(req.body.quantite) || 1;
+    if (!req.session.panier) req.session.panier = [];
+    const existingIndex = req.session.panier.findIndex(item => item.id === platId);
+    if (existingIndex !== -1) {
+        req.session.panier[existingIndex].quantite += quantite;
+    } else {
+        req.session.panier.push({ id: platId, quantite: quantite });
+    }
+    res.redirect('/');
+});
+
+// Page du panier
+app.get('/panier', (req, res) => {
+    const panierItems = req.session.panier || [];
+    const articles = panierItems.map(item => {
+        const plat = plats.find(p => p.id === item.id);
+        return { ...plat, quantite: item.quantite, total: plat.prix * item.quantite };
+    }).filter(a => a);
+    let total = 0;
+    articles.forEach(article => total += article.total);
+    res.render('panier', { articles, total, user: req.session.user });
+});
+
+// Modifier quantité
+app.post('/panier/modifier-quantite/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const quantite = parseInt(req.body.quantite);
+    if (req.session.panier) {
+        const item = req.session.panier.find(i => i.id === id);
+        if (item) {
+            if (quantite <= 0) {
+                req.session.panier = req.session.panier.filter(i => i.id !== id);
+            } else {
+                item.quantite = quantite;
+            }
+        }
+    }
+    res.redirect('/panier');
+});
+
+// Retirer un article du panier
+app.post('/panier/retirer/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    if (req.session.panier) {
+        req.session.panier = req.session.panier.filter(item => item.id !== id);
+    }
+    res.redirect('/panier');
+});
+
+// Valider la commande (paiement à la livraison)
+app.post('/valider-commande', (req, res) => {
+    const panierItems = req.session.panier || [];
+    if (panierItems.length === 0) return res.redirect('/panier');
+    const telephone = req.body.telephone;
+    const adresse = req.body.adresse;
+    const articles = panierItems.map(item => {
+        const plat = plats.find(p => p.id === item.id);
+        return { id: plat.id, nom: plat.nom, prix: plat.prix, quantite: item.quantite, total: plat.prix * item.quantite, description: plat.description, image: plat.image };
+    });
+    let total = 0;
+    articles.forEach(a => total += a.total);
+    const commande = {
+        id: Date.now(), date: new Date().toLocaleString(), articles, total, telephone, adresse, statut: 'en attente', paiement: 'livraison',
+        userId: req.session.user?.id, userName: req.session.user?.nom || 'Invité', userPrenom: req.session.user?.prenom || null,
+        userEmail: req.session.user?.email, userTelephone: req.session.user?.telephone, userLieuResidence: req.session.user?.lieuResidence
+    };
+    let commandes = [];
+    if (fs.existsSync('./data/commandes.json')) commandes = JSON.parse(fs.readFileSync('./data/commandes.json', 'utf8'));
+    commandes.push(commande);
+    fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
+    if (req.session.user?.email) envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
+    req.session.panier = [];
+    res.send(`<h1>✅ Commande validée</h1><p>Merci pour votre commande n°${commande.id}</p><a href="/"><button>🔄 Nouvelle commande</button></a>`);
+});
+
+// Paiement Stripe
+app.post('/creer-paiement', async (req, res) => {
+    const panierItems = req.session.panier || [];
+    if (panierItems.length === 0) return res.redirect('/panier');
+    const lineItems = [];
+    for (const item of panierItems) {
+        const plat = plats.find(p => p.id === item.id);
+        if (plat) lineItems.push({ price_data: { currency: 'xof', product_data: { name: plat.nom, description: plat.description, images: [plat.image] }, unit_amount: plat.prix }, quantity: item.quantite });
+    }
+    try {
+        const sessionStripe = await stripe.checkout.sessions.create({ payment_method_types: ['card'], line_items: lineItems, mode: 'payment', success_url: 'http://localhost:3000/succes-paiement?session_id={CHECKOUT_SESSION_ID}', cancel_url: 'http://localhost:3000/panier', customer_email: req.session.user?.email });
+        res.redirect(sessionStripe.url);
+    } catch (error) { res.send(`<h1>❌ Erreur de paiement</h1><p>${error.message}</p><a href="/panier"><button>Retour</button></a>`); }
+});
+
+app.get('/succes-paiement', async (req, res) => {
+    const panierItems = req.session.panier || [];
+    if (panierItems.length === 0) return res.redirect('/');
+    const articles = panierItems.map(item => { const plat = plats.find(p => p.id === item.id); return { id: plat.id, nom: plat.nom, prix: plat.prix, quantite: item.quantite, total: plat.prix * item.quantite, description: plat.description, image: plat.image }; });
+    let total = 0; articles.forEach(a => total += a.total);
+    const commande = { id: Date.now(), date: new Date().toLocaleString(), articles, total, telephone: '', adresse: '', statut: 'payée', paiement: 'stripe', userId: req.session.user?.id, userName: req.session.user?.nom || 'Invité', userPrenom: req.session.user?.prenom || null, userEmail: req.session.user?.email, userTelephone: req.session.user?.telephone, userLieuResidence: req.session.user?.lieuResidence };
+    let commandes = [];
+    if (fs.existsSync('./data/commandes.json')) commandes = JSON.parse(fs.readFileSync('./data/commandes.json', 'utf8'));
+    commandes.push(commande);
+    fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
+    if (req.session.user?.email) envoyerConfirmationCommande(req.session.user.email, commande, 'Non renseigné', 'Non renseignée').catch(err => console.error(err));
+    req.session.panier = [];
+    res.send(`<h1>✅ Paiement réussi</h1><p>Merci pour votre commande n°${commande.id}</p><a href="/"><button>🔄 Nouvelle commande</button></a>`);
+});
+
+// Paiement Wave
+app.post('/valider-commande-wave', (req, res) => {
+    const panierItems = req.session.panier || [];
+    if (panierItems.length === 0) return res.redirect('/panier');
+    const { transaction_id, telephone, adresse } = req.body;
+    const articles = panierItems.map(item => { const plat = plats.find(p => p.id === item.id); return { id: plat.id, nom: plat.nom, prix: plat.prix, quantite: item.quantite, total: plat.prix * item.quantite, description: plat.description, image: plat.image }; });
+    let total = 0; articles.forEach(a => total += a.total);
+    const commande = { id: Date.now(), date: new Date().toLocaleString(), articles, total, telephone, adresse, transaction_wave: transaction_id, statut: 'en attente (paiement Wave)', paiement: 'wave', userId: req.session.user?.id, userName: req.session.user?.nom || 'Invité', userPrenom: req.session.user?.prenom || null };
+    let commandes = [];
+    if (fs.existsSync('./data/commandes.json')) commandes = JSON.parse(fs.readFileSync('./data/commandes.json', 'utf8'));
+    commandes.push(commande);
+    fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
+    if (req.session.user?.email) envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
+    req.session.panier = [];
+    res.send(`<h1>✅ Commande validée (Wave)</h1><p>Transaction : ${transaction_id}</p><a href="/"><button>🔄 Nouvelle commande</button></a>`);
+});
+
+// Notes et avis
+app.post('/ajouter-avis/:platId', (req, res) => {
+    const platId = parseInt(req.params.platId);
+    const { note, commentaire } = req.body;
+    const user = req.session.user;
+    if (!user) return res.redirect('/auth/connexion');
+    let avis = [];
+    if (fs.existsSync('./data/avis.json')) avis = JSON.parse(fs.readFileSync('./data/avis.json', 'utf8'));
+    avis.push({ id: Date.now(), platId, userId: user.id, userName: `${user.prenom} ${user.nom}`, note: parseInt(note), commentaire, date: new Date().toLocaleString() });
+    fs.writeFileSync('./data/avis.json', JSON.stringify(avis, null, 2));
+    res.redirect('/');
+});
+
+app.get('/api/avis/:platId', (req, res) => {
+    const platId = parseInt(req.params.platId);
+    let avis = [];
+    if (fs.existsSync('./data/avis.json')) avis = JSON.parse(fs.readFileSync('./data/avis.json', 'utf8'));
+    const avisPlat = avis.filter(a => a.platId === platId);
+    const moyenne = avisPlat.length > 0 ? avisPlat.reduce((sum, a) => sum + a.note, 0) / avisPlat.length : 0;
+    res.json({ avis: avisPlat, moyenne: moyenne.toFixed(1), total: avisPlat.length });
+});
+
+// Routes
+app.use('/auth', require('./routes/auth'));
+app.use('/admin', require('./routes/admin'));
+
+// Démarrage
+app.listen(3000, () => {
+    console.log('Serveur démarré sur http://localhost:3000');
+});
