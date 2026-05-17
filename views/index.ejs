@@ -81,7 +81,7 @@
             font-weight: 500;
         }
 
-        /* MENU UTILISATEUR (comme une app) */
+        /* MENU UTILISATEUR */
         .user-actions {
             display: flex;
             align-items: center;
@@ -159,7 +159,7 @@
             box-shadow: 0 0 0 3px rgba(230,126,34,0.1);
         }
 
-        /* CATÉGORIES (scroll horizontal comme Glovo) */
+        /* CATÉGORIES */
         .categories {
             display: flex;
             gap: 12px;
@@ -191,10 +191,10 @@
             color: white;
         }
 
-        /* GRILLE DES PLATS (2 colonnes desktop / 1 mobile) */
+        /* GRILLE DES PLATS : 4 COLONNES sur tablette/desktop */
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 24px;
             margin-bottom: 48px;
         }
@@ -307,7 +307,7 @@
             background: #d35400;
         }
 
-        /* PIED DE PAGE */
+        /* PIED DE PAGE AVEC LOGO */
         .footer {
             background: #1a1a2e;
             color: #ccc;
@@ -329,6 +329,29 @@
             color: #e67e22;
             margin-bottom: 16px;
             font-size: 18px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .footer-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .footer-logo span {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
         }
 
         .footer-section p {
@@ -422,11 +445,25 @@
         }
 
         /* RESPONSIVE */
-        @media (max-width: 700px) {
+        @media (max-width: 1100px) {
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
             .menu-grid {
                 grid-template-columns: 1fr;
             }
+        }
 
+        @media (max-width: 700px) {
             .header-content {
                 flex-direction: column;
                 align-items: stretch;
@@ -505,7 +542,10 @@
 <div class="footer">
     <div class="footer-container">
         <div class="footer-section">
-            <h3>🍕 TONKPIRESTO</h3>
+            <div class="footer-logo">
+                <img src="/images/logo.png" alt="TONKPIRESTO">
+                <span>TONKPIRESTO</span>
+            </div>
             <p>Le goût des sommets, livré chez vous</p>
             <p>Livraison rapide à Abidjan</p>
         </div>
