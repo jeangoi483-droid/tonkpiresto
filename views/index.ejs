@@ -163,26 +163,84 @@
         .footer {
             background: #1a1a2e;
             color: #ccc;
-            padding: 40px 0 24px;
-            margin-top: 40px;
+            padding: 48px 0 24px;
+            margin-top: 48px;
             border-radius: 32px 32px 0 0;
         }
         .footer-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 32px;
+            gap: 40px;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 16px;
         }
-        .footer-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-        .footer-logo img { width: 45px; height: 45px; border-radius: 50%; }
+        .footer-section h3 {
+            color: #e67e22;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .footer-logo img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .footer-logo span {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .footer-section p {
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .footer-section a:hover {
+            color: #e67e22;
+        }
+        .social-icons {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .social-icons a {
+            background: rgba(255,255,255,0.1);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 20px;
+            transition: 0.2s;
+        }
+        .social-icons a:hover {
+            background: #e67e22;
+            transform: translateY(-3px);
+        }
         .copyright {
             text-align: center;
-            margin-top: 32px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-            font-size: 12px;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 13px;
+            color: #888;
         }
         .modal {
             display: none;
@@ -212,6 +270,9 @@
         @media (max-width: 700px) {
             .header-content { flex-direction: column; align-items: stretch; }
             .user-actions { justify-content: center; }
+            .footer-container { grid-template-columns: 1fr; text-align: center; gap: 32px; }
+            .footer-logo { justify-content: center; }
+            .social-icons { justify-content: center; }
         }
     </style>
 </head>
@@ -232,7 +293,7 @@
                 <a href="/auth/connexion" class="btn-outline">Connexion</a>
                 <a href="/auth/inscription" class="btn-primary">Inscription</a>
             <% } %>
-            <a href="/panier" class="cart-icon" id="cartLink">
+            <a href="/panier" class="cart-icon">
                 🛒 Panier
                 <span id="cartCount" class="cart-count">0</span>
             </a>
@@ -272,6 +333,7 @@
     </div>
 </div>
 
+<!-- ========== PIED DE PAGE COMPLET ========== -->
 <div class="footer">
     <div class="footer-container">
         <div class="footer-section">
@@ -279,15 +341,31 @@
                 <img src="/images/logo.png" alt="TONKPIRESTO">
                 <span>TONKPIRESTO</span>
             </div>
-            <p>Livraison rapide à Abidjan</p>
+            <p>Le goût des sommets, livré chez vous</p>
+            <p>Livraison rapide et gratuite*</p>
+            <p>*Conditions applicables</p>
         </div>
         <div class="footer-section">
-            <h3>📞 Contact</h3>
+            <h3>📞 CONTACT</h3>
             <p>📱 <a href="tel:+2250555594062">+225 05 55 59 40 62</a></p>
-            <p>📧 contact@tonkpiresto.com</p>
+            <p>📧 <a href="mailto:contact@tonkpiresto.com">contact@tonkpiresto.com</a></p>
+            <p>🕒 Lun - Dim : 11h - 22h</p>
+        </div>
+        <div class="footer-section">
+            <h3>📍 ADRESSE</h3>
+            <p>Abidjan, Côte d'Ivoire</p>
+            <p>Livraison dans tout Abidjan</p>
+            <div class="social-icons">
+                <a href="#" aria-label="Facebook">📘</a>
+                <a href="#" aria-label="Instagram">📸</a>
+                <a href="#" aria-label="Twitter">🐦</a>
+                <a href="#" aria-label="WhatsApp">💬</a>
+            </div>
         </div>
     </div>
-    <div class="copyright">© 2025 TONKPIRESTO</div>
+    <div class="copyright">
+        © 2025 TONKPIRESTO — Tous droits réservés | Site réalisé avec 🍕 pour vous servir
+    </div>
 </div>
 
 <div id="modalAvis" class="modal">
@@ -311,10 +389,7 @@
 </div>
 
 <script>
-    function filterCategorie(categorie) {
-        window.location.href = '/?categorie=' + categorie;
-    }
-
+    function filterCategorie(categorie) { window.location.href = '/?categorie=' + categorie; }
     function filterPlats() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         document.querySelectorAll('.plat-card').forEach(card => {
@@ -322,72 +397,42 @@
             card.style.display = nom && nom.includes(searchTerm) ? '' : 'none';
         });
     }
-
     function ouvrirModal(platId) {
         document.getElementById('formAvis').action = '/ajouter-avis/' + platId;
         document.getElementById('modalAvis').style.display = 'flex';
     }
-
-    function fermerModal() {
-        document.getElementById('modalAvis').style.display = 'none';
-    }
-
+    function fermerModal() { document.getElementById('modalAvis').style.display = 'none'; }
     async function chargerNote(platId, elementId) {
         try {
             const res = await fetch('/api/avis/' + platId);
             const data = await res.json();
             const div = document.getElementById(elementId);
-            if (div) {
-                div.innerHTML = data.total > 0 ? `⭐ ${data.moyenne}/5 (${data.total} avis)` : '⭐ Pas encore d\'avis';
-            }
+            if (div) div.innerHTML = data.total > 0 ? `⭐ ${data.moyenne}/5 (${data.total} avis)` : '⭐ Pas encore d\'avis';
         } catch(e) {}
     }
-
     function updateCartCount() {
         fetch('/api/cart-count')
             .then(res => res.json())
-            .then(data => {
-                const badge = document.getElementById('cartCount');
-                if (badge) badge.innerText = data.count;
-            })
+            .then(data => { const badge = document.getElementById('cartCount'); if (badge) badge.innerText = data.count; })
             .catch(err => console.log(err));
     }
-
-    // AJOUT AU PANIER EN AJAX (sans rechargement)
     document.querySelectorAll('.btn-ajouter').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             const platId = this.getAttribute('data-id');
             const quantite = document.getElementById('qty-' + platId).value;
-
             fetch('/ajouter-panier', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ id: platId, quantite: quantite })
             })
-            .then(response => {
-                if (response.ok) {
-                    updateCartCount();  // Met à jour le badge
-                    // Petit effet visuel (optionnel)
-                    btn.textContent = '✅ Ajouté !';
-                    setTimeout(() => { btn.textContent = '➕ Ajouter au panier'; }, 1000);
-                } else {
-                    alert('Erreur lors de l\'ajout');
-                }
-            })
-            .catch(err => console.error('Erreur:', err));
+            .then(response => { if (response.ok) updateCartCount(); else alert('Erreur'); })
+            .catch(err => console.error(err));
         });
     });
-
-    window.onclick = function(e) {
-        const modal = document.getElementById('modalAvis');
-        if (e.target === modal) fermerModal();
-    };
-
+    window.onclick = function(e) { const modal = document.getElementById('modalAvis'); if (e.target === modal) fermerModal(); };
     document.addEventListener('DOMContentLoaded', () => {
-        <% plats.forEach(plat => { %>
-            chargerNote(<%= plat.id %>, 'note-<%= plat.id %>');
-        <% }); %>
+        <% plats.forEach(plat => { %> chargerNote(<%= plat.id %>, 'note-<%= plat.id %>'); <% }); %>
         updateCartCount();
         setInterval(updateCartCount, 3000);
     });
