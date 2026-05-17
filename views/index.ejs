@@ -31,7 +31,6 @@
             padding: 0 16px;
         }
 
-        /* HEADER */
         .header {
             background: white;
             padding: 16px 0;
@@ -72,7 +71,6 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            letter-spacing: -0.3px;
         }
 
         .logo-text p {
@@ -81,7 +79,6 @@
             font-weight: 500;
         }
 
-        /* MENU UTILISATEUR */
         .user-actions {
             display: flex;
             align-items: center;
@@ -130,7 +127,7 @@
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             transition: background 0.2s;
         }
 
@@ -138,7 +135,15 @@
             background: #eaeaea;
         }
 
-        /* RECHERCHE */
+        .cart-count {
+            background: #e67e22;
+            color: white;
+            border-radius: 30px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
         .search-wrapper {
             margin: 32px 0 24px;
         }
@@ -159,7 +164,6 @@
             box-shadow: 0 0 0 3px rgba(230,126,34,0.1);
         }
 
-        /* CATÉGORIES */
         .categories {
             display: flex;
             gap: 12px;
@@ -191,7 +195,6 @@
             color: white;
         }
 
-        /* GRILLE 4 COLONNES */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -248,8 +251,8 @@
         }
 
         .plat-note {
-            font-size: 13px;
             margin-bottom: 12px;
+            font-size: 13px;
         }
 
         .etoiles {
@@ -307,7 +310,6 @@
             background: #d35400;
         }
 
-        /* PIED DE PAGE */
         .footer {
             background: #1a1a2e;
             color: #ccc;
@@ -325,12 +327,6 @@
             padding: 0 16px;
         }
 
-        .footer-section h3 {
-            color: #e67e22;
-            margin-bottom: 16px;
-            font-size: 18px;
-        }
-
         .footer-logo {
             display: flex;
             align-items: center;
@@ -342,7 +338,6 @@
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            object-fit: cover;
         }
 
         .footer-logo span {
@@ -354,39 +349,10 @@
             color: transparent;
         }
 
-        .footer-section p {
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .footer-section a {
-            color: #ccc;
-            text-decoration: none;
-        }
-
-        .footer-section a:hover {
+        .footer-section h3 {
             color: #e67e22;
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .social-icons a {
-            background: rgba(255,255,255,0.1);
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.2s;
-        }
-
-        .social-icons a:hover {
-            background: #e67e22;
+            margin-bottom: 16px;
+            font-size: 18px;
         }
 
         .copyright {
@@ -397,7 +363,6 @@
             font-size: 12px;
         }
 
-        /* MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -444,35 +409,18 @@
             cursor: pointer;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 1100px) {
-            .menu-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
+            .menu-grid { grid-template-columns: repeat(3, 1fr); }
         }
-
         @media (max-width: 800px) {
-            .menu-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .menu-grid { grid-template-columns: repeat(2, 1fr); }
         }
-
         @media (max-width: 550px) {
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
+            .menu-grid { grid-template-columns: 1fr; }
         }
-
         @media (max-width: 700px) {
-            .header-content {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .user-actions {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
+            .header-content { flex-direction: column; align-items: stretch; }
+            .user-actions { justify-content: center; flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -490,21 +438,24 @@
 
         <div class="user-actions">
             <% if (user && user.id) { %>
-                <span style="font-weight: 500;">👋 <%= user.prenom %></span>
+                <span style="font-weight:500;">👋 <%= user.prenom %></span>
                 <a href="/auth/profil" class="btn-outline">Mon profil</a>
                 <a href="/auth/deconnexion" class="btn-outline">Déconnexion</a>
             <% } else { %>
                 <a href="/auth/connexion" class="btn-outline">Connexion</a>
                 <a href="/auth/inscription" class="btn-primary">Inscription</a>
             <% } %>
-            <a href="/panier" class="cart-icon">🛒 Panier</a>
+            <a href="/panier" class="cart-icon">
+                🛒 Panier
+                <span id="cartCount" class="cart-count">0</span>
+            </a>
         </div>
     </div>
 </div>
 
 <div class="container">
     <div class="search-wrapper">
-        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rechercher un plat... (ex: pizza, burger, yassa...)" onkeyup="filterPlats()">
+        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rechercher un plat..." onkeyup="filterPlats()">
     </div>
 
     <div class="categories">
@@ -525,7 +476,7 @@
                     <div class="plat-prix"><%= plat.prix.toLocaleString() %> F CFA</div>
                     <div class="plat-note" id="note-<%= plat.id %>">⭐ Chargement...</div>
                     <button class="btn-avis" onclick="ouvrirModal(<%= plat.id %>, '<%= plat.nom.replace(/'/g, "\\'") %>')">⭐ Donner mon avis</button>
-                    <form action="/ajouter-panier" method="POST">
+                    <form action="/ajouter-panier" method="POST" class="add-to-cart-form">
                         <input type="hidden" name="id" value="<%= plat.id %>">
                         <div class="quantite-select">
                             <label>Quantité</label>
@@ -559,12 +510,6 @@
             <h3>📍 Adresse</h3>
             <p>Abidjan, Côte d'Ivoire</p>
             <p>Livraison dans toute la ville</p>
-            <div class="social-icons">
-                <a href="#">📘</a>
-                <a href="#">📸</a>
-                <a href="#">🐦</a>
-                <a href="#">💬</a>
-            </div>
         </div>
     </div>
     <div class="copyright">
@@ -572,7 +517,7 @@
     </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL AVIS -->
 <div id="modalAvis" class="modal">
     <div class="modal-content">
         <h3>⭐ Donner mon avis</h3>
@@ -628,6 +573,31 @@
         } catch(e) { console.error(e); }
     }
 
+    // Mise à jour du compteur panier
+    function updateCartCount() {
+        fetch('/api/cart-count')
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.getElementById('cartCount');
+                if (badge) badge.innerText = data.count;
+            })
+            .catch(err => console.log("Erreur compteur", err));
+    }
+
+    // Intercepter l'ajout au panier pour rafraîchir le compteur sans rechargement
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/ajouter-panier', {
+                method: 'POST',
+                body: formData
+            }).then(() => {
+                updateCartCount();
+            }).catch(err => console.log(err));
+        });
+    });
+
     window.onclick = function(e) {
         const modal = document.getElementById('modalAvis');
         if (e.target === modal) fermerModal();
@@ -637,8 +607,9 @@
         <% plats.forEach(plat => { %>
             chargerNote(<%= plat.id %>, 'note-<%= plat.id %>');
         <% }); %>
+        updateCartCount();
+        setInterval(updateCartCount, 4000);
     });
 </script>
-
 </body>
 </html>
