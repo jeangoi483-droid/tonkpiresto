@@ -362,10 +362,10 @@
             .catch(err => console.log(err));
     }
 
-    // Envoi du formulaire d'ajout au panier avec AJAX
+    // INTERCEPTION DES FORMULAIRES D'AJOUT AU PANIER
     document.querySelectorAll('.add-to-cart-form').forEach(form => {
         form.addEventListener('submit', function(e) {
-            e.preventDefault();  // Empêche le rechargement
+            e.preventDefault();
             const formData = new FormData(this);
             fetch('/ajouter-panier', {
                 method: 'POST',
@@ -373,10 +373,10 @@
             })
             .then(response => {
                 if (response.redirected) {
-                    window.location.href = response.url;  // Redirige vers le panier
+                    // Redirige vers la page du panier après ajout
+                    window.location.href = response.url;
                 } else {
-                    updateCartCount();  // Met à jour le compteur
-                    alert('Article ajouté au panier !');
+                    updateCartCount();
                 }
             })
             .catch(err => console.error('Erreur:', err));
