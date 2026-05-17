@@ -253,7 +253,7 @@
 
     <div class="menu-grid" id="menuGrid">
         <% plats.forEach(plat => { %>
-            <div class="plat-card" data-nom="<%= plat.nom.toLowerCase() %>">
+            <div class="plat-card" data-nom="<%= plat.nom.toLowerCase() %>" data-id="<%= plat.id %>">
                 <img src="<%= plat.image %>" class="plat-image" alt="<%= plat.nom %>" onerror="this.src='https://placehold.co/400x200?text=Plat'">
                 <div class="plat-info">
                     <div class="plat-nom"><%= plat.nom %></div>
@@ -261,14 +261,11 @@
                     <div class="plat-prix"><%= plat.prix.toLocaleString() %> F CFA</div>
                     <div class="plat-note" id="note-<%= plat.id %>">⭐ Chargement...</div>
                     <button class="btn-avis" onclick="ouvrirModal(<%= plat.id %>, '<%= plat.nom.replace(/'/g, "\\'") %>')">⭐ Donner mon avis</button>
-                    <form action="/ajouter-panier" method="POST">
-                        <input type="hidden" name="id" value="<%= plat.id %>">
-                        <div class="quantite-select">
-                            <label>Quantité</label>
-                            <input type="number" name="quantite" value="1" min="1" max="10">
-                        </div>
-                        <button type="submit" class="btn-ajouter">➕ Ajouter au panier</button>
-                    </form>
+                    <div class="quantite-select">
+                        <label>Quantité</label>
+                        <input type="number" id="qty-<%= plat.id %>" value="1" min="1" max="10">
+                    </div>
+                    <button class="btn-ajouter" data-id="<%= plat.id %>">➕ Ajouter au panier</button>
                 </div>
             </div>
         <% }) %>
@@ -356,6 +353,32 @@
             .catch(err => console.log(err));
     }
 
+    // AJOUT AU PANIER EN AJAX (sans rechargement)
+    document.querySelectorAll('.btn-ajouter').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const platId = this.getAttribute('data-id');
+            const quantite = document.getElementById('qty-' + platId).value;
+
+            fetch('/ajouter-panier', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ id: platId, quantite: quantite })
+            })
+            .then(response => {
+                if (response.ok) {
+                    updateCartCount();  // Met à jour le badge
+                    // Petit effet visuel (optionnel)
+                    btn.textContent = '✅ Ajouté !';
+                    setTimeout(() => { btn.textContent = '➕ Ajouter au panier'; }, 1000);
+                } else {
+                    alert('Erreur lors de l\'ajout');
+                }
+            })
+            .catch(err => console.error('Erreur:', err));
+        });
+    });
+
     window.onclick = function(e) {
         const modal = document.getElementById('modalAvis');
         if (e.target === modal) fermerModal();
@@ -366,7 +389,7 @@
             chargerNote(<%= plat.id %>, 'note-<%= plat.id %>');
         <% }); %>
         updateCartCount();
-        setInterval(updateCartCount, 4000);
+        setInterval(updateCartCount, 3000);
     });
 </script>
 </body>
