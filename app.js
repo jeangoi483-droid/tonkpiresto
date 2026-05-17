@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 
 // Liste des plats (version stable)
 const plats = [
-    { id: 1, nom: 'Pizza Margherita', prix: 5000, description: 'Sauce tomate, mozzarella, basilic frais', image: 'https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?w=300', categorie: 'plats' },
+    { id: 1, nom: 'Tchep Poulet (Riz au Poulet à la Sénégalaise)', prix: 5000, description: 'Un plat convivial et réconfortant, typique de la cuisine sénégalaise.', image: 'https://saveursdeoumy.com/wp-content/uploads/2025/10/IMG-20251015-WA0013-934x1024.jpg?w=300', categorie: 'plats' },
     { id: 2, nom: 'Burger Classique', prix: 3500, description: 'Steak haché, salade, tomate, oignon, sauce spéciale', image: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?w=300', categorie: 'plats' },
     { id: 3, nom: 'Salade César', prix: 4000, description: 'Poulet grillé, parmesan, croûtons, sauce césar', image: 'https://images.pexels.com/photos/1211887/pexels-photo-1211887.jpeg?w=300', categorie: 'plats' },
     { id: 4, nom: 'Pâtes Carbonara', prix: 4500, description: 'Pâtes fraîches, œuf, parmesan, lardons', image: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?w=300', categorie: 'plats' },
