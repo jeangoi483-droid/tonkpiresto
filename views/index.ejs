@@ -12,25 +12,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #fff5eb 0%, #ffe4d6 100%);
             color: #1a1a1a;
-            scroll-behavior: smooth;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
         .header {
             background: white;
             padding: 16px 0;
@@ -38,32 +26,12 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
         }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo img {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
+        .header-content { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
         .logo-text h1 {
             font-size: 22px;
             font-weight: 700;
@@ -72,19 +40,7 @@
             -webkit-background-clip: text;
             color: transparent;
         }
-
-        .logo-text p {
-            font-size: 11px;
-            color: #e67e22;
-            font-weight: 500;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
+        .user-actions { display: flex; align-items: center; gap: 12px; }
         .btn-outline {
             background: transparent;
             border: 1px solid #e67e22;
@@ -92,16 +48,10 @@
             padding: 8px 18px;
             border-radius: 40px;
             font-weight: 600;
-            font-size: 14px;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
-
-        .btn-outline:hover {
-            background: #e67e22;
-            color: white;
-        }
-
+        .btn-outline:hover { background: #e67e22; color: white; }
         .btn-primary {
             background: #e67e22;
             color: white;
@@ -109,15 +59,7 @@
             border-radius: 40px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s;
-            box-shadow: 0 2px 6px rgba(230,126,34,0.2);
         }
-
-        .btn-primary:hover {
-            background: #d35400;
-            transform: translateY(-1px);
-        }
-
         .cart-icon {
             background: #f5f5f5;
             padding: 8px 16px;
@@ -128,133 +70,60 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: background 0.2s;
         }
-
-        .cart-icon:hover {
-            background: #eaeaea;
-        }
-
         .cart-count {
             background: #e67e22;
             color: white;
             border-radius: 30px;
             padding: 2px 8px;
             font-size: 12px;
-            font-weight: bold;
         }
-
-        .search-wrapper {
-            margin: 32px 0 24px;
-        }
-
         .search-bar {
             width: 100%;
             padding: 14px 20px;
             border-radius: 48px;
             border: 1px solid #e0e0e0;
             background: white;
+            margin: 32px 0 24px;
             font-size: 16px;
-            outline: none;
-            transition: all 0.2s;
         }
-
-        .search-bar:focus {
-            border-color: #e67e22;
-            box-shadow: 0 0 0 3px rgba(230,126,34,0.1);
-        }
-
         .categories {
             display: flex;
             gap: 12px;
             overflow-x: auto;
-            padding-bottom: 12px;
             margin-bottom: 32px;
-            scrollbar-width: thin;
+            padding-bottom: 12px;
         }
-
-        .categories::-webkit-scrollbar {
-            height: 4px;
-        }
-
         .categorie-btn {
             background: white;
             border: 1px solid #eaeaea;
             padding: 8px 20px;
             border-radius: 40px;
             font-weight: 500;
-            font-size: 14px;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s;
         }
-
-        .categorie-btn.active {
-            background: #e67e22;
-            border-color: #e67e22;
-            color: white;
-        }
-
+        .categorie-btn.active { background: #e67e22; border-color: #e67e22; color: white; }
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 24px;
             margin-bottom: 48px;
         }
-
         .plat-card {
             background: white;
             border-radius: 24px;
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
+            transition: 0.2s;
         }
-
-        .plat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.1);
-        }
-
-        .plat-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
-
-        .plat-info {
-            padding: 18px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .plat-nom {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .plat-description {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-
-        .plat-prix {
-            font-size: 20px;
-            font-weight: 800;
-            color: #e67e22;
-            margin-bottom: 12px;
-        }
-
-        .plat-note {
-            margin-bottom: 12px;
-            font-size: 13px;
-        }
-
+        .plat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.1); }
+        .plat-image { width: 100%; height: 180px; object-fit: cover; }
+        .plat-info { padding: 18px; }
+        .plat-nom { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .plat-description { font-size: 13px; color: #666; margin-bottom: 12px; }
+        .plat-prix { font-size: 20px; font-weight: 800; color: #e67e22; margin-bottom: 12px; }
+        .plat-note { margin-bottom: 12px; font-size: 13px; }
         .etoiles {
             background: #fef5e8;
             padding: 4px 10px;
@@ -262,7 +131,6 @@
             font-size: 12px;
             display: inline-block;
         }
-
         .btn-avis {
             background: none;
             border: 1px solid #ddd;
@@ -272,20 +140,9 @@
             font-weight: 500;
             margin-bottom: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            width: 100%;
         }
-
-        .btn-avis:hover {
-            background: #f5f5f5;
-        }
-
-        .quantite-select {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 14px;
-        }
-
+        .quantite-select { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
         .quantite-select input {
             width: 65px;
             padding: 8px;
@@ -293,7 +150,6 @@
             border-radius: 30px;
             text-align: center;
         }
-
         .btn-ajouter {
             background: #e67e22;
             color: white;
@@ -301,15 +157,9 @@
             padding: 10px;
             border-radius: 40px;
             font-weight: 700;
-            font-size: 14px;
             cursor: pointer;
-            transition: background 0.2s;
+            width: 100%;
         }
-
-        .btn-ajouter:hover {
-            background: #d35400;
-        }
-
         .footer {
             background: #1a1a2e;
             color: #ccc;
@@ -317,7 +167,6 @@
             margin-top: 40px;
             border-radius: 32px 32px 0 0;
         }
-
         .footer-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -326,35 +175,13 @@
             margin: 0 auto;
             padding: 0 16px;
         }
-
         .footer-logo {
             display: flex;
             align-items: center;
             gap: 12px;
             margin-bottom: 16px;
         }
-
-        .footer-logo img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-        }
-
-        .footer-logo span {
-            font-size: 18px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #e67e22, #d35400);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-
-        .footer-section h3 {
-            color: #e67e22;
-            margin-bottom: 16px;
-            font-size: 18px;
-        }
-
+        .footer-logo img { width: 45px; height: 45px; border-radius: 50%; }
         .copyright {
             text-align: center;
             margin-top: 32px;
@@ -362,7 +189,6 @@
             border-top: 1px solid #333;
             font-size: 12px;
         }
-
         .modal {
             display: none;
             position: fixed;
@@ -375,7 +201,6 @@
             align-items: center;
             z-index: 1000;
         }
-
         .modal-content {
             background: white;
             padding: 28px;
@@ -383,41 +208,12 @@
             max-width: 400px;
             width: 90%;
         }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .btn-confirm {
-            background: #e67e22;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 40px;
-            flex: 1;
-            cursor: pointer;
-        }
-
-        .btn-cancel {
-            background: #ccc;
-            border: none;
-            padding: 12px;
-            border-radius: 40px;
-            flex: 1;
-            cursor: pointer;
-        }
-
-        @media (max-width: 1100px) {
-            .menu-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (max-width: 800px) {
-            .menu-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 550px) {
-            .menu-grid { grid-template-columns: 1fr; }
-        }
+        .modal-buttons { display: flex; gap: 12px; margin-top: 20px; }
+        .btn-confirm { background: #e67e22; color: white; border: none; padding: 12px; border-radius: 40px; flex: 1; cursor: pointer; }
+        .btn-cancel { background: #ccc; border: none; padding: 12px; border-radius: 40px; flex: 1; cursor: pointer; }
+        @media (max-width: 1100px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 800px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 550px) { .menu-grid { grid-template-columns: 1fr; } }
         @media (max-width: 700px) {
             .header-content { flex-direction: column; align-items: stretch; }
             .user-actions { justify-content: center; flex-wrap: wrap; }
@@ -430,22 +226,18 @@
     <div class="container header-content">
         <div class="logo">
             <img src="/images/logo.png" alt="TONKPIRESTO">
-            <div class="logo-text">
-                <h1>TONKPIRESTO</h1>
-                <p>Le goût des sommets, livré chez vous</p>
-            </div>
+            <div class="logo-text"><h1>TONKPIRESTO</h1></div>
         </div>
-
         <div class="user-actions">
             <% if (user && user.id) { %>
-                <span style="font-weight:500;">👋 <%= user.prenom %></span>
+                <span>👋 <%= user.prenom %></span>
                 <a href="/auth/profil" class="btn-outline">Mon profil</a>
                 <a href="/auth/deconnexion" class="btn-outline">Déconnexion</a>
             <% } else { %>
                 <a href="/auth/connexion" class="btn-outline">Connexion</a>
                 <a href="/auth/inscription" class="btn-primary">Inscription</a>
             <% } %>
-            <a href="/panier" class="cart-icon">
+            <a href="/panier" class="cart-icon" id="cartLink">
                 🛒 Panier
                 <span id="cartCount" class="cart-count">0</span>
             </a>
@@ -454,9 +246,7 @@
 </div>
 
 <div class="container">
-    <div class="search-wrapper">
-        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rechercher un plat..." onkeyup="filterPlats()">
-    </div>
+    <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rechercher un plat..." onkeyup="filterPlats()">
 
     <div class="categories">
         <button class="categorie-btn <%= categorieActive === 'tous' ? 'active' : '' %>" onclick="filterCategorie('tous')">Tous</button>
@@ -468,7 +258,7 @@
 
     <div class="menu-grid" id="menuGrid">
         <% plats.forEach(plat => { %>
-            <div class="plat-card" data-nom="<%= plat.nom.toLowerCase() %>" data-categorie="<%= plat.categorie %>">
+            <div class="plat-card" data-nom="<%= plat.nom.toLowerCase() %>">
                 <img src="<%= plat.image %>" class="plat-image" alt="<%= plat.nom %>" onerror="this.src='https://placehold.co/400x200?text=Plat'">
                 <div class="plat-info">
                     <div class="plat-nom"><%= plat.nom %></div>
@@ -476,11 +266,11 @@
                     <div class="plat-prix"><%= plat.prix.toLocaleString() %> F CFA</div>
                     <div class="plat-note" id="note-<%= plat.id %>">⭐ Chargement...</div>
                     <button class="btn-avis" onclick="ouvrirModal(<%= plat.id %>, '<%= plat.nom.replace(/'/g, "\\'") %>')">⭐ Donner mon avis</button>
-                    <form action="/ajouter-panier" method="POST" class="add-to-cart-form">
+                    <form action="/ajouter-panier" method="POST" class="add-to-cart-form" data-id="<%= plat.id %>">
                         <input type="hidden" name="id" value="<%= plat.id %>">
                         <div class="quantite-select">
                             <label>Quantité</label>
-                            <input type="number" name="quantite" value="1" min="1" max="10">
+                            <input type="number" name="quantite" value="1" min="1" max="10" class="quantity-input">
                         </div>
                         <button type="submit" class="btn-ajouter">➕ Ajouter au panier</button>
                     </form>
@@ -497,27 +287,17 @@
                 <img src="/images/logo.png" alt="TONKPIRESTO">
                 <span>TONKPIRESTO</span>
             </div>
-            <p>Le goût des sommets, livré chez vous</p>
             <p>Livraison rapide à Abidjan</p>
         </div>
         <div class="footer-section">
             <h3>📞 Contact</h3>
             <p>📱 <a href="tel:+2250555594062">+225 05 55 59 40 62</a></p>
-            <p>📧 <a href="mailto:contact@tonkpiresto.com">contact@tonkpiresto.com</a></p>
-            <p>🕒 11h - 22h (7j/7)</p>
-        </div>
-        <div class="footer-section">
-            <h3>📍 Adresse</h3>
-            <p>Abidjan, Côte d'Ivoire</p>
-            <p>Livraison dans toute la ville</p>
+            <p>📧 contact@tonkpiresto.com</p>
         </div>
     </div>
-    <div class="copyright">
-        © 2025 TONKPIRESTO — Tous droits réservés
-    </div>
+    <div class="copyright">© 2025 TONKPIRESTO</div>
 </div>
 
-<!-- MODAL AVIS -->
 <div id="modalAvis" class="modal">
     <div class="modal-content">
         <h3>⭐ Donner mon avis</h3>
@@ -539,38 +319,36 @@
 </div>
 
 <script>
+    // Filtres et catégories
     function filterCategorie(categorie) {
         window.location.href = '/?categorie=' + categorie;
     }
-
     function filterPlats() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const cards = document.querySelectorAll('.plat-card');
-        cards.forEach(card => {
+        document.querySelectorAll('.plat-card').forEach(card => {
             const nom = card.getAttribute('data-nom');
             card.style.display = nom && nom.includes(searchTerm) ? '' : 'none';
         });
     }
 
-    function ouvrirModal(platId, platNom) {
+    // Modal avis
+    function ouvrirModal(platId) {
         const form = document.getElementById('formAvis');
         form.action = '/ajouter-avis/' + platId;
         document.getElementById('modalAvis').style.display = 'flex';
     }
-
     function fermerModal() {
         document.getElementById('modalAvis').style.display = 'none';
     }
 
+    // Charger les notes
     async function chargerNote(platId, elementId) {
         try {
             const res = await fetch('/api/avis/' + platId);
             const data = await res.json();
             const div = document.getElementById(elementId);
-            if (div) {
-                div.innerHTML = data.total > 0 ? `⭐ ${data.moyenne}/5 (${data.total} avis)` : '⭐ Pas encore d\'avis';
-            }
-        } catch(e) { console.error(e); }
+            if (div) div.innerHTML = data.total > 0 ? `⭐ ${data.moyenne}/5 (${data.total} avis)` : '⭐ Pas encore d\'avis';
+        } catch(e) {}
     }
 
     // Mise à jour du compteur panier
@@ -581,20 +359,27 @@
                 const badge = document.getElementById('cartCount');
                 if (badge) badge.innerText = data.count;
             })
-            .catch(err => console.log("Erreur compteur", err));
+            .catch(err => console.log(err));
     }
 
-    // Intercepter l'ajout au panier pour rafraîchir le compteur sans rechargement
+    // Envoi du formulaire d'ajout au panier avec AJAX
     document.querySelectorAll('.add-to-cart-form').forEach(form => {
         form.addEventListener('submit', function(e) {
-            e.preventDefault();
+            e.preventDefault();  // Empêche le rechargement
             const formData = new FormData(this);
             fetch('/ajouter-panier', {
                 method: 'POST',
                 body: formData
-            }).then(() => {
-                updateCartCount();
-            }).catch(err => console.log(err));
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;  // Redirige vers le panier
+                } else {
+                    updateCartCount();  // Met à jour le compteur
+                    alert('Article ajouté au panier !');
+                }
+            })
+            .catch(err => console.error('Erreur:', err));
         });
     });
 
