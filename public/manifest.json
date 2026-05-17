@@ -1,0 +1,17 @@
+{
+    "name": "TONKPIRESTO",
+    "short_name": "TONKPIRESTO",
+    "description": "Le gout des sommets, livre chez vous",
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#e67e22",
+    "background_color": "#ffffff",
+    "orientation": "portrait",
+   "icons": [
+    {
+        "src": "/images/logo.png",
+        "sizes": "500x500",
+        "type": "image/png"
+    }
+]
+}
