@@ -2,529 +2,451 @@
 <html>
 <head>
     <title>TONKPIRESTO - Mon panier</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#e67e22">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TONKPIRESTO">
+    <link rel="apple-touch-icon" href="/images/logo.png">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #fff5eb 0%, #ffe4d6 100%);
+            color: #1a1a1a;
+            scroll-behavior: smooth;
         }
-        
+
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 16px;
         }
-        
+
+        /* HEADER (identique à index) */
         .header {
             background: white;
-            border-radius: 15px;
-            padding: 15px 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
         }
-        
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
-        .logo-image {
-            width: 55px;
-            height: 55px;
-            object-fit: cover;
+
+        .logo img {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        
-        .logo-nom {
-            font-size: 20px;
-            font-weight: bold;
+
+        .logo-text h1 {
+            font-size: 22px;
+            font-weight: 700;
             background: linear-gradient(135deg, #e67e22, #d35400);
-            -webkit-background-clip: text;
             background-clip: text;
+            -webkit-background-clip: text;
             color: transparent;
         }
-        
-        .logo-slogan {
-            font-size: 9px;
+
+        .logo-text p {
+            font-size: 11px;
             color: #e67e22;
-            margin-top: 2px;
+            font-weight: 500;
         }
-        
-        .retour-btn {
-            background: #666;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-        }
-        
-        .panier-vide {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 15px;
-        }
-        
-        .panier-vide button {
-            margin-top: 20px;
-            background: #e67e22;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            color: white;
-            cursor: pointer;
-        }
-        
-        .article-card {
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
+
+        .user-actions {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #e67e22;
+            color: #e67e22;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: #e67e22;
+            color: white;
+        }
+
+        .cart-icon {
+            background: #f5f5f5;
+            padding: 8px 16px;
+            border-radius: 40px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .cart-icon:hover {
+            background: #eaeaea;
+        }
+
+        .cart-count {
+            background: #e67e22;
+            color: white;
+            border-radius: 30px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Contenu principal */
+        .cart-container {
+            background: white;
+            border-radius: 32px;
+            padding: 24px;
+            margin: 32px 0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .cart-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #1a1a1a;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             flex-wrap: wrap;
-            transition: all 0.3s;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
         }
-        
-        .article-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .article-image {
+
+        .item-image {
             width: 80px;
             height: 80px;
+            border-radius: 20px;
             object-fit: cover;
-            border-radius: 10px;
         }
-        
-        .article-details {
+
+        .item-details {
             flex: 2;
         }
-        
-        .article-nom {
-            font-weight: bold;
+
+        .item-name {
+            font-weight: 700;
             font-size: 18px;
-            color: #e67e22;
+            margin-bottom: 4px;
         }
-        
-        .article-desc {
-            font-size: 12px;
+
+        .item-desc {
+            font-size: 13px;
             color: #666;
         }
-        
-        .article-prix {
-            font-weight: bold;
-            color: #27ae60;
+
+        .item-price {
+            font-weight: 800;
+            color: #e67e22;
+            margin-top: 6px;
         }
-        
-        .quantite-control {
+
+        .item-quantity {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
-        
-        .quantite-control input {
-            width: 60px;
+
+        .quantity-input {
+            width: 70px;
             padding: 8px;
+            border-radius: 40px;
             border: 1px solid #ddd;
-            border-radius: 8px;
             text-align: center;
         }
-        
-        .btn-retirer {
-            background: #e74c3c;
-            color: white;
+
+        .btn-remove {
+            background: none;
             border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
+            color: #e74c3c;
+            font-weight: 600;
             cursor: pointer;
-        }
-        
-        .total {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            text-align: right;
-            font-size: 24px;
-            font-weight: bold;
-            color: #e67e22;
-        }
-        
-        .form-livraison {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
-        }
-        
-        .form-livraison h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
             font-size: 14px;
         }
-        
-        .btn-valider {
-            width: 100%;
-            background: linear-gradient(135deg, #27ae60, #219a52);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 25px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        
-        .btn-paiement-ligne {
-            width: 100%;
-            background: linear-gradient(135deg, #635bff, #4a42c4);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 25px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        
-        .separateur {
-            text-align: center;
-            margin: 20px 0;
-            position: relative;
-        }
-        
-        .separateur::before,
-        .separateur::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 45%;
-            height: 1px;
-            background: #ddd;
-        }
-        
-        .separateur::before {
-            left: 0;
-        }
-        
-        .separateur::after {
-            right: 0;
-        }
-        
-        .separateur span {
-            background: white;
-            padding: 0 10px;
-            color: #999;
-        }
-        
-        /* ========== STYLE WAVE ========== */
-        .wave-section {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            text-align: center;
-            border: 2px solid #4caf50;
-        }
-        
-        .wave-logo {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 10px;
-            object-fit: contain;
-        }
-        
-        .wave-number {
-            background: white;
-            padding: 12px;
-            border-radius: 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 15px 0;
-            font-size: 20px;
-        }
-        
-        .btn-copier {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-        }
-        
-        .btn-wave {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            width: 100%;
-        }
-        
-        .btn-wave:hover {
-            background: #388e3c;
-        }
-        
-        .wave-instruction {
-            font-size: 12px;
-            color: #555;
-            margin: 10px 0;
-        }
-        
-        .footer {
-            background: #1a1a2e;
-            color: white;
-            margin-top: 50px;
-            padding: 30px 20px 20px;
-            border-radius: 20px 20px 0 0;
-        }
-        
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-        
-        .footer-section h3 {
-            color: #e67e22;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-        
-        .footer-section p {
-            margin-bottom: 8px;
-            color: #ccc;
-            font-size: 14px;
-        }
-        
-        .footer-section a {
-            color: #e67e22;
-            text-decoration: none;
-        }
-        
-        .footer-section a:hover {
+
+        .btn-remove:hover {
             text-decoration: underline;
         }
-        
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
+
+        .cart-total {
+            text-align: right;
+            font-size: 24px;
+            font-weight: 800;
+            padding: 20px 0;
+            border-top: 2px solid #f0f0f0;
+            margin-top: 12px;
         }
-        
-        .social-icons a {
+
+        .delivery-form {
+            margin-top: 24px;
+        }
+
+        .delivery-form input, .delivery-form textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 48px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 16px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
             background: #e67e22;
-            width: 35px;
-            height: 35px;
+            color: white;
+            padding: 14px;
+            border-radius: 48px;
+            font-weight: 700;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #d35400;
+        }
+
+        .separator {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .separator span {
+            background: white;
+            padding: 0 12px;
+            color: #999;
+        }
+
+        .footer {
+            background: #1a1a2e;
+            color: #ccc;
+            padding: 40px 0 24px;
+            margin-top: 40px;
+            border-radius: 32px 32px 0 0;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .footer-logo {
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-size: 18px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
-        
+
+        .footer-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+
         .copyright {
             text-align: center;
+            margin-top: 32px;
             padding-top: 20px;
-            margin-top: 20px;
             border-top: 1px solid #333;
             font-size: 12px;
-            color: #888;
         }
-        
-        @media (max-width: 768px) {
-            .article-card {
+
+        @media (max-width: 700px) {
+            .cart-item {
                 flex-direction: column;
-                text-align: center;
+                align-items: flex-start;
             }
-            .total {
-                text-align: center;
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
             }
-            .logo-image {
-                width: 45px;
-                height: 45px;
-            }
-            .logo-nom {
-                font-size: 16px;
-            }
-            .footer-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            .social-icons {
+            .user-actions {
                 justify-content: center;
-            }
-            .wave-number {
-                font-size: 16px;
-                flex-wrap: wrap;
-                gap: 10px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <img src="/images/logo.jpg" alt="TONKPIRESTO" class="logo-image" onerror="this.src='https://placehold.co/55x55?text=🍕'">
-                <div>
-                    <div class="logo-nom">TONKPIRESTO</div>
-                    <div class="logo-slogan">LE GOUT DES SOMMETS, LIVRE CHEZ VOUS</div>
-                </div>
+
+<div class="header">
+    <div class="container header-content">
+        <div class="logo">
+            <img src="/images/logo.png" alt="TONKPIRESTO">
+            <div class="logo-text">
+                <h1>TONKPIRESTO</h1>
+                <p>Le goût des sommets, livré chez vous</p>
             </div>
-            <a href="/" class="retour-btn">← Retour au menu</a>
         </div>
-        
+        <div class="user-actions">
+            <% if (user && user.id) { %>
+                <span>👋 <%= user.prenom %></span>
+                <a href="/auth/profil" class="btn-outline">Mon profil</a>
+                <a href="/auth/deconnexion" class="btn-outline">Déconnexion</a>
+            <% } else { %>
+                <a href="/auth/connexion" class="btn-outline">Connexion</a>
+                <a href="/auth/inscription" class="btn-outline">Inscription</a>
+            <% } %>
+            <a href="/panier" class="cart-icon" id="cartLink">
+                🛒 Panier
+                <span id="cartCount" class="cart-count">0</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="cart-container">
+        <div class="cart-title">🛒 Mon panier</div>
+
         <% if (articles.length === 0) { %>
-            <div class="panier-vide">
-                <p>🍕 Votre panier est vide.</p>
-                <a href="/"><button>Voir le menu</button></a>
-            </div>
+            <p style="text-align:center; padding: 40px;">🍕 Votre panier est vide.</p>
+            <a href="/" style="display:block; text-align:center;" class="btn-primary">Voir le menu</a>
         <% } else { %>
-            
             <% articles.forEach(article => { %>
-                <div class="article-card">
-                    <img src="<%= article.image %>" class="article-image" onerror="this.src='https://placehold.co/80x80?text=Plat'">
-                    <div class="article-details">
-                        <div class="article-nom"><%= article.nom %></div>
-                        <div class="article-desc"><%= article.description %></div>
-                        <div class="article-prix"><%= article.prix.toLocaleString() %> F CFA / unité</div>
+                <div class="cart-item" data-id="<%= article.id %>">
+                    <img src="<%= article.image %>" class="item-image" onerror="this.src='https://placehold.co/80x80?text=Plat'">
+                    <div class="item-details">
+                        <div class="item-name"><%= article.nom %></div>
+                        <div class="item-desc"><%= article.description %></div>
+                        <div class="item-price"><%= article.prix.toLocaleString() %> F CFA / unité</div>
                     </div>
-                    <form action="/panier/modifier-quantite/<%= article.id %>" method="POST" class="quantite-control">
-                        <input type="number" name="quantite" value="<%= article.quantite %>" min="0" max="10" onchange="this.form.submit()">
-                    </form>
-                    <div style="min-width: 100px; text-align: center;">
-                        <strong><%= article.total.toLocaleString() %> F CFA</strong>
-                    </div>
-                    <form action="/panier/retirer/<%= article.id %>" method="POST">
-                        <button type="submit" class="btn-retirer">❌ Retirer</button>
-                    </form>
-                </div>
-            <% }) %>
-            
-            <div class="total">
-                Total : <%= total.toLocaleString() %> F CFA
-            </div>
-            
-            <div class="form-livraison">
-                <h2>📝 Informations de livraison</h2>
-                <form action="/valider-commande" method="POST">
-                    <div>
-                        <input type="tel" name="telephone" required placeholder="📞 Votre numéro de téléphone">
-                    </div>
-                    <div>
-                        <textarea name="adresse" required placeholder="🏠 Votre adresse complète" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn-valider">✅ Valider la commande (paiement à la livraison)</button>
-                </form>
-                
-                <div class="separateur">
-                    <span>OU</span>
-                </div>
-                
-                <form action="/creer-paiement" method="POST">
-                    <button type="submit" class="btn-paiement-ligne">
-                        💳 Payer en ligne (Carte bancaire)
-                    </button>
-                </form>
-                
-                <!-- ========== SECTION WAVE ========== -->
-                <div class="wave-section">
-                    <div class="wave-info">
-                        <img src="https://play-lh.googleusercontent.com/-Mp3XW7uhwn3KGQxUKGPoc4MbA5ti-3-q23TgoVi9ujBgHWW5n4IySvlG5Exwrxsjw=w240-h480-rw" alt="Wave" class="wave-logo" onerror="this.src='https://placehold.co/60x60?text=Wave'">
-                        <h3>💚 Paiement Wave</h3>
-                        <p>Effectuez votre paiement via Wave à ce numéro :</p>
-                        <div class="wave-number">
-                            <span>📞 <strong>07 48 41 52 86</strong></span>
-                            <button type="button" onclick="copierNumero()" class="btn-copier">📋 Copier</button>
-                        </div>
-                        <p class="wave-instruction">Après paiement, entrez le numéro de transaction ci-dessous :</p>
-                        <form action="/valider-commande-wave" method="POST">
-                            <input type="text" name="transaction_id" placeholder="Numéro de transaction Wave" required>
-                            <input type="tel" name="telephone" placeholder="📞 Votre numéro Wave" required>
-                            <textarea name="adresse" placeholder="🏠 Votre adresse de livraison" rows="2" required></textarea>
-                            <button type="submit" class="btn-wave">✅ Valider la commande (Wave)</button>
+                    <div class="item-quantity">
+                        <form action="/panier/modifier-quantite/<%= article.id %>" method="POST" style="display: flex; gap: 8px; align-items: center;">
+                            <input type="number" name="quantite" value="<%= article.quantite %>" min="1" max="99" class="quantity-input" onchange="this.form.submit()">
+                        </form>
+                        <form action="/panier/retirer/<%= article.id %>" method="POST">
+                            <button type="submit" class="btn-remove">❌ Retirer</button>
                         </form>
                     </div>
+                    <div style="font-weight:800; min-width: 100px; text-align:right;">
+                        <%= article.total.toLocaleString() %> F CFA
+                    </div>
+                </div>
+            <% }) %>
+
+            <div class="cart-total">
+                Total : <span id="totalAmount"><%= total.toLocaleString() %></span> F CFA
+            </div>
+
+            <div class="delivery-form">
+                <h3 style="margin-bottom: 16px;">📝 Informations de livraison</h3>
+                <form action="/valider-commande" method="POST">
+                    <input type="tel" name="telephone" placeholder="📞 Votre numéro de téléphone" required>
+                    <textarea name="adresse" placeholder="🏠 Votre adresse complète" rows="2" required></textarea>
+                    <button type="submit" class="btn-primary">✅ Valider la commande (paiement à la livraison)</button>
+                </form>
+
+                <div class="separator"><span>OU</span></div>
+
+                <form action="/creer-paiement" method="POST">
+                    <button type="submit" class="btn-primary">💳 Payer en ligne (Carte bancaire)</button>
+                </form>
+
+                <div style="background: #fef5e8; border-radius: 32px; padding: 20px; margin-top: 24px;">
+                    <h3 style="margin-bottom: 12px;">💚 Paiement Wave</h3>
+                    <p>Effectuez votre paiement via Wave au <strong>07 48 41 52 86</strong></p>
+                    <button onclick="navigator.clipboard.writeText('0748415286'); alert('Numéro copié')" style="background: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 30px; margin-top: 8px;">📋 Copier le numéro</button>
+                    <form action="/valider-commande-wave" method="POST" style="margin-top: 20px;">
+                        <input type="text" name="transaction_id" placeholder="Numéro de transaction Wave" required>
+                        <input type="tel" name="telephone" placeholder="📞 Votre numéro Wave" required>
+                        <textarea name="adresse" placeholder="🏠 Adresse de livraison" rows="2" required></textarea>
+                        <button type="submit" class="btn-primary">✅ Valider la commande (Wave)</button>
+                    </form>
                 </div>
             </div>
-            
         <% } %>
     </div>
-    
-    <div class="footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>🍕 TONKPIRESTO</h3>
-                <p>LE GOUT DES SOMMETS, LIVRE CHEZ VOUS</p>
-                <p>Votre service de livraison de repas préféré.</p>
+</div>
+
+<div class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="footer-logo">
+                <img src="/images/logo.png" alt="TONKPIRESTO">
+                <span>TONKPIRESTO</span>
             </div>
-            <div class="footer-section">
-                <h3>📞 CONTACT</h3>
-                <p>📱 Téléphone : <a href="tel:+2250555594062">+225 05 55 59 40 62</a></p>
-                <p>📧 Email : <a href="mailto:contact@tonkpiresto.com">contact@tonkpiresto.com</a></p>
-                <p>🕒 Horaires : 11h00 - 22h00 (7j/7)</p>
-            </div>
-            <div class="footer-section">
-                <h3>📍 ADRESSE</h3>
-                <p>Abidjan, Côte d'Ivoire</p>
-                <p>Livraison dans tout Abidjan</p>
-                <div class="social-icons">
-                    <a href="#" style="color: white;">📘</a>
-                    <a href="#" style="color: white;">📸</a>
-                    <a href="#" style="color: white;">🐦</a>
-                    <a href="#" style="color: white;">💬</a>
-                </div>
-            </div>
+            <p>Le goût des sommets, livré chez vous</p>
+            <p>Livraison rapide à Abidjan</p>
         </div>
-        <div class="copyright">
-            &copy; 2024 TONKPIRESTO - Tous droits réservés | Site réalisé avec 🍕 pour vous servir
+        <div class="footer-section">
+            <h3>📞 Contact</h3>
+            <p>📱 <a href="tel:+2250555594062">+225 05 55 59 40 62</a></p>
+            <p>📧 <a href="mailto:contact@tonkpiresto.com">contact@tonkpiresto.com</a></p>
+            <p>🕒 11h - 22h (7j/7)</p>
+        </div>
+        <div class="footer-section">
+            <h3>📍 Adresse</h3>
+            <p>Abidjan, Côte d'Ivoire</p>
+            <p>Livraison dans toute la ville</p>
         </div>
     </div>
-    
-    <script>
-        function copierNumero() {
-            const numero = '0748415286';
-            navigator.clipboard.writeText(numero);
-            alert('✅ Numéro copié : ' + numero);
-        }
-    </script>
+    <div class="copyright">
+        © 2025 TONKPIRESTO — Tous droits réservés
+    </div>
+</div>
+
+<script>
+    // Mise à jour du compteur d'articles dans le header (basé sur les articles du panier)
+    function updateCartCount() {
+        fetch('/api/cart-count')
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.getElementById('cartCount');
+                if (badge) badge.innerText = data.count;
+            })
+            .catch(err => console.log("Impossible de récupérer le compteur"));
+    }
+
+    // Appel toutes les 2 secondes pour refléter les ajouts depuis d'autres onglets (optionnel)
+    setInterval(updateCartCount, 2000);
+    updateCartCount();
+</script>
 </body>
 </html>
