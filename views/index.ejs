@@ -118,7 +118,29 @@
             transition: 0.2s;
         }
         .plat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.1); }
-        .plat-image { width: 100%; height: 180px; object-fit: cover; }
+        
+        /* ========== CORRECTION DES IMAGES ========== */
+        .image-container {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+        }
+        .plat-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+        .plat-card:hover .plat-image {
+            transform: scale(1.05);
+        }
+        /* ========================================== */
+        
         .plat-info { padding: 18px; }
         .plat-nom { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
         .plat-description { font-size: 13px; color: #666; margin-bottom: 12px; }
@@ -201,19 +223,9 @@
             -webkit-background-clip: text;
             color: transparent;
         }
-        .footer-section p {
-            margin-bottom: 10px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        .footer-section a {
-            color: #ccc;
-            text-decoration: none;
-            transition: 0.2s;
-        }
-        .footer-section a:hover {
-            color: #e67e22;
-        }
+        .footer-section p { margin-bottom: 10px; font-size: 14px; line-height: 1.5; }
+        .footer-section a { color: #ccc; text-decoration: none; transition: 0.2s; }
+        .footer-section a:hover { color: #e67e22; }
         .social-icons {
             display: flex;
             gap: 16px;
@@ -273,6 +285,7 @@
             .footer-container { grid-template-columns: 1fr; text-align: center; gap: 32px; }
             .footer-logo { justify-content: center; }
             .social-icons { justify-content: center; }
+            .image-container { height: 180px; }
         }
     </style>
 </head>
@@ -315,7 +328,9 @@
     <div class="menu-grid" id="menuGrid">
         <% plats.forEach(plat => { %>
             <div class="plat-card" data-nom="<%= plat.nom.toLowerCase() %>" data-id="<%= plat.id %>">
-                <img src="<%= plat.image %>" class="plat-image" alt="<%= plat.nom %>" onerror="this.src='https://placehold.co/400x200?text=Plat'">
+                <div class="image-container">
+                    <img src="<%= plat.image %>" class="plat-image" alt="<%= plat.nom %>" onerror="this.src='https://placehold.co/400x200?text=Plat'">
+                </div>
                 <div class="plat-info">
                     <div class="plat-nom"><%= plat.nom %></div>
                     <div class="plat-description"><%= plat.description %></div>
@@ -333,7 +348,6 @@
     </div>
 </div>
 
-<!-- ========== PIED DE PAGE COMPLET ========== -->
 <div class="footer">
     <div class="footer-container">
         <div class="footer-section">
@@ -342,19 +356,19 @@
                 <span>TONKPIRESTO</span>
             </div>
             <p>Le goût des sommets, livré chez vous</p>
-            <p>Livraison rapide et gratuite*</p>
+            <p>Livraison rapide *</p>
             <p>*Conditions applicables</p>
         </div>
         <div class="footer-section">
             <h3>📞 CONTACT</h3>
             <p>📱 <a href="tel:+2250555594062">+225 05 55 59 40 62</a></p>
             <p>📧 <a href="mailto:contact@tonkpiresto.com">contact@tonkpiresto.com</a></p>
-            <p>🕒 Lun - Dim : 11h - 22h</p>
+            <p>🕒 Lun - Dim : 07h - 22h</p>
         </div>
         <div class="footer-section">
             <h3>📍 ADRESSE</h3>
-            <p>Abidjan, Côte d'Ivoire</p>
-            <p>Livraison dans tout Abidjan</p>
+            <p>Man, Côte d'Ivoire</p>
+            <p>Livraison dans tout le TONKPI</p>
             <div class="social-icons">
                 <a href="#" aria-label="Facebook">📘</a>
                 <a href="#" aria-label="Instagram">📸</a>
