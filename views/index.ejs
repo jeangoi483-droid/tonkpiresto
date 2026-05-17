@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" href="/images/logo.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -40,7 +40,7 @@
             -webkit-background-clip: text;
             color: transparent;
         }
-        .user-actions { display: flex; align-items: center; gap: 12px; }
+        .user-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .btn-outline {
             background: transparent;
             border: 1px solid #e67e22;
@@ -175,12 +175,7 @@
             margin: 0 auto;
             padding: 0 16px;
         }
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
+        .footer-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
         .footer-logo img { width: 45px; height: 45px; border-radius: 50%; }
         .copyright {
             text-align: center;
@@ -216,7 +211,7 @@
         @media (max-width: 550px) { .menu-grid { grid-template-columns: 1fr; } }
         @media (max-width: 700px) {
             .header-content { flex-direction: column; align-items: stretch; }
-            .user-actions { justify-content: center; flex-wrap: wrap; }
+            .user-actions { justify-content: center; }
         }
     </style>
 </head>
@@ -266,11 +261,11 @@
                     <div class="plat-prix"><%= plat.prix.toLocaleString() %> F CFA</div>
                     <div class="plat-note" id="note-<%= plat.id %>">⭐ Chargement...</div>
                     <button class="btn-avis" onclick="ouvrirModal(<%= plat.id %>, '<%= plat.nom.replace(/'/g, "\\'") %>')">⭐ Donner mon avis</button>
-                    <form action="/ajouter-panier" method="POST" class="add-to-cart-form" data-id="<%= plat.id %>">
+                    <form action="/ajouter-panier" method="POST">
                         <input type="hidden" name="id" value="<%= plat.id %>">
                         <div class="quantite-select">
                             <label>Quantité</label>
-                            <input type="number" name="quantite" value="1" min="1" max="10" class="quantity-input">
+                            <input type="number" name="quantite" value="1" min="1" max="10">
                         </div>
                         <button type="submit" class="btn-ajouter">➕ Ajouter au panier</button>
                     </form>
@@ -319,10 +314,10 @@
 </div>
 
 <script>
-    // Filtres et catégories
     function filterCategorie(categorie) {
         window.location.href = '/?categorie=' + categorie;
     }
+
     function filterPlats() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         document.querySelectorAll('.plat-card').forEach(card => {
@@ -331,27 +326,26 @@
         });
     }
 
-    // Modal avis
     function ouvrirModal(platId) {
-        const form = document.getElementById('formAvis');
-        form.action = '/ajouter-avis/' + platId;
+        document.getElementById('formAvis').action = '/ajouter-avis/' + platId;
         document.getElementById('modalAvis').style.display = 'flex';
     }
+
     function fermerModal() {
         document.getElementById('modalAvis').style.display = 'none';
     }
 
-    // Charger les notes
     async function chargerNote(platId, elementId) {
         try {
             const res = await fetch('/api/avis/' + platId);
             const data = await res.json();
             const div = document.getElementById(elementId);
-            if (div) div.innerHTML = data.total > 0 ? `⭐ ${data.moyenne}/5 (${data.total} avis)` : '⭐ Pas encore d\'avis';
+            if (div) {
+                div.innerHTML = data.total > 0 ? `⭐ ${data.moyenne}/5 (${data.total} avis)` : '⭐ Pas encore d\'avis';
+            }
         } catch(e) {}
     }
 
-    // Mise à jour du compteur panier
     function updateCartCount() {
         fetch('/api/cart-count')
             .then(res => res.json())
@@ -361,27 +355,6 @@
             })
             .catch(err => console.log(err));
     }
-
-    // INTERCEPTION DES FORMULAIRES D'AJOUT AU PANIER
-    document.querySelectorAll('.add-to-cart-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            fetch('/ajouter-panier', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.redirected) {
-                    // Redirige vers la page du panier après ajout
-                    window.location.href = response.url;
-                } else {
-                    updateCartCount();
-                }
-            })
-            .catch(err => console.error('Erreur:', err));
-        });
-    });
 
     window.onclick = function(e) {
         const modal = document.getElementById('modalAvis');
