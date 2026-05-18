@@ -121,7 +121,7 @@ app.post('/panier/retirer/:id', (req, res) => {
     res.redirect('/panier');
 });
 
-// Valider la commande (paiement à la livraison)
+// ========== PAGE DE CONFIRMATION STYLISÉE (LIVRAISON) ==========
 app.post('/valider-commande', (req, res) => {
     const panierItems = req.session.panier || [];
     if (panierItems.length === 0) return res.redirect('/panier');
@@ -144,14 +144,79 @@ app.post('/valider-commande', (req, res) => {
     fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
     if (req.session.user?.email) envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
     req.session.panier = [];
+
     res.send(`
-        <h1>✅ Commande validée</h1>
-        <p>Merci pour votre commande n°${commande.id}</p>
-        <a href="/"><button>🔄 Nouvelle commande</button></a>
+        <!DOCTYPE html>
+        <html>
+        <head><title>Commande validée</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            *{margin:0;padding:0;box-sizing:border-box;}
+            body{
+                font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+                background:linear-gradient(135deg,#fff5eb 0%,#ffe4d6 100%);
+                min-height:100vh;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                padding:20px;
+            }
+            .card{
+                background:white;
+                border-radius:32px;
+                max-width:550px;
+                width:100%;
+                padding:40px;
+                text-align:center;
+                box-shadow:0 20px 40px rgba(0,0,0,0.1);
+            }
+            .card h1{color:#27ae60;font-size:28px;margin-bottom:16px;}
+            .numero{font-size:20px;font-weight:bold;color:#e67e22;margin-bottom:24px;}
+            .details{
+                background:#f8f9fa;
+                border-radius:24px;
+                padding:20px;
+                text-align:left;
+                margin:24px 0;
+            }
+            .details p{margin:8px 0;font-size:15px;}
+            .btn-retour{
+                background:#e67e22;
+                color:white;
+                border:none;
+                padding:14px 30px;
+                border-radius:50px;
+                font-size:16px;
+                font-weight:600;
+                cursor:pointer;
+                text-decoration:none;
+                display:inline-block;
+                transition:0.2s;
+            }
+            .btn-retour:hover{background:#d35400;transform:scale(1.02);}
+            .logo{width:60px;margin-bottom:20px;border-radius:50%;}
+            @media (max-width:550px){.card{padding:24px;}.card h1{font-size:24px;}}
+        </style>
+        </head>
+        <body>
+            <div class="card">
+                <img src="/images/logo.png" alt="TONKPIRESTO" class="logo">
+                <h1>✅ Commande validée !</h1>
+                <div class="numero">📦 N° ${commande.id}</div>
+                <div class="details">
+                    <p><strong>📞 Téléphone :</strong> ${telephone}</p>
+                    <p><strong>🏠 Adresse :</strong> ${adresse}</p>
+                    <p><strong>💰 Total :</strong> ${total.toLocaleString()} F CFA</p>
+                    <p><strong>💵 Paiement :</strong> À la livraison</p>
+                </div>
+                <p style="margin-bottom:24px;">Un livreur arrivera dans <strong>30-45 minutes</strong>.</p>
+                <a href="/" class="btn-retour">🔄 Nouvelle commande</a>
+            </div>
+        </body>
+        </html>
     `);
 });
 
-// Paiement Stripe
+// ========== STRIPE : PAIEMENT EN LIGNE ==========
 app.post('/creer-paiement', async (req, res) => {
     const panierItems = req.session.panier || [];
     if (panierItems.length === 0) return res.redirect('/panier');
@@ -194,10 +259,78 @@ app.get('/succes-paiement', async (req, res) => {
     fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
     if (req.session.user?.email) envoyerConfirmationCommande(req.session.user.email, commande, 'Non renseigné', 'Non renseignée').catch(err => console.error(err));
     req.session.panier = [];
-    res.send(`<h1>✅ Paiement réussi</h1><p>Merci pour votre commande n°${commande.id}</p><a href="/"><button>🔄 Nouvelle commande</button></a>`);
+
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head><title>Paiement réussi</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            *{margin:0;padding:0;box-sizing:border-box;}
+            body{
+                font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+                background:linear-gradient(135deg,#fff5eb 0%,#ffe4d6 100%);
+                min-height:100vh;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                padding:20px;
+            }
+            .card{
+                background:white;
+                border-radius:32px;
+                max-width:550px;
+                width:100%;
+                padding:40px;
+                text-align:center;
+                box-shadow:0 20px 40px rgba(0,0,0,0.1);
+            }
+            .card h1{color:#27ae60;font-size:28px;margin-bottom:16px;}
+            .numero{font-size:20px;font-weight:bold;color:#e67e22;margin-bottom:24px;}
+            .details{
+                background:#f8f9fa;
+                border-radius:24px;
+                padding:20px;
+                text-align:left;
+                margin:24px 0;
+            }
+            .details p{margin:8px 0;font-size:15px;}
+            .btn-retour{
+                background:#e67e22;
+                color:white;
+                border:none;
+                padding:14px 30px;
+                border-radius:50px;
+                font-size:16px;
+                font-weight:600;
+                cursor:pointer;
+                text-decoration:none;
+                display:inline-block;
+                transition:0.2s;
+            }
+            .btn-retour:hover{background:#d35400;transform:scale(1.02);}
+            .logo{width:60px;margin-bottom:20px;border-radius:50%;}
+            @media (max-width:550px){.card{padding:24px;}.card h1{font-size:24px;}}
+        </style>
+        </head>
+        <body>
+            <div class="card">
+                <img src="/images/logo.png" class="logo">
+                <h1>✅ Paiement réussi !</h1>
+                <div class="numero">📦 N° ${commande.id}</div>
+                <div class="details">
+                    <p><strong>💰 Total payé :</strong> ${total.toLocaleString()} F CFA</p>
+                    <p><strong>💳 Paiement :</strong> Carte bancaire (Stripe)</p>
+                    <p><strong>📧 Confirmation :</strong> ${req.session.user?.email ? 'Email envoyé' : 'Non envoyé'}</p>
+                </div>
+                <p style="margin-bottom:24px;">Votre commande sera préparée immédiatement.</p>
+                <a href="/" class="btn-retour">🔄 Nouvelle commande</a>
+            </div>
+        </body>
+        </html>
+    `);
 });
 
-// Paiement Wave
+// ========== WAVE : PAIEMENT MOBILE ==========
 app.post('/valider-commande-wave', (req, res) => {
     const panierItems = req.session.panier || [];
     if (panierItems.length === 0) return res.redirect('/panier');
@@ -217,7 +350,75 @@ app.post('/valider-commande-wave', (req, res) => {
     fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
     if (req.session.user?.email) envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
     req.session.panier = [];
-    res.send(`<h1>✅ Commande validée (Wave)</h1><p>Transaction : ${transaction_id}</p><a href="/"><button>🔄 Nouvelle commande</button></a>`);
+
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head><title>Commande Wave</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            *{margin:0;padding:0;box-sizing:border-box;}
+            body{
+                font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+                background:linear-gradient(135deg,#fff5eb 0%,#ffe4d6 100%);
+                min-height:100vh;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                padding:20px;
+            }
+            .card{
+                background:white;
+                border-radius:32px;
+                max-width:550px;
+                width:100%;
+                padding:40px;
+                text-align:center;
+                box-shadow:0 20px 40px rgba(0,0,0,0.1);
+            }
+            .card h1{color:#4caf50;font-size:28px;margin-bottom:16px;}
+            .numero{font-size:20px;font-weight:bold;color:#e67e22;margin-bottom:24px;}
+            .details{
+                background:#f8f9fa;
+                border-radius:24px;
+                padding:20px;
+                text-align:left;
+                margin:24px 0;
+            }
+            .details p{margin:8px 0;font-size:15px;}
+            .btn-retour{
+                background:#e67e22;
+                color:white;
+                border:none;
+                padding:14px 30px;
+                border-radius:50px;
+                font-size:16px;
+                font-weight:600;
+                cursor:pointer;
+                text-decoration:none;
+                display:inline-block;
+                transition:0.2s;
+            }
+            .btn-retour:hover{background:#d35400;transform:scale(1.02);}
+            .logo{width:60px;margin-bottom:20px;border-radius:50%;}
+            @media (max-width:550px){.card{padding:24px;}.card h1{font-size:24px;}}
+        </style>
+        </head>
+        <body>
+            <div class="card">
+                <img src="/images/logo.png" class="logo">
+                <h1>✅ Commande Wave</h1>
+                <div class="numero">N° ${commande.id}</div>
+                <div class="details">
+                    <p><strong>💰 Total :</strong> ${total.toLocaleString()} F CFA</p>
+                    <p><strong>💚 Transaction Wave :</strong> ${transaction_id}</p>
+                    <p><strong>📞 Téléphone :</strong> ${telephone}</p>
+                    <p><strong>🏠 Adresse :</strong> ${adresse}</p>
+                </div>
+                <a href="/" class="btn-retour">🔄 Nouvelle commande</a>
+            </div>
+        </body>
+        </html>
+    `);
 });
 
 // Notes et avis
