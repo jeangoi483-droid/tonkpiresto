@@ -200,7 +200,9 @@ app.get('/succes-paiement', async (req, res) => {
     if (fs.existsSync('./data/commandes.json')) commandes = JSON.parse(fs.readFileSync('./data/commandes.json', 'utf8'));
     commandes.push(commande);
     fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
-    if (req.session.user?.email) envoyerConfirmationCommande(req.session.user.email, commande, 'Non renseigné', 'Non renseignée').catch(err => console.error(err));
+    if (req.session.user?.email) {
+    envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
+}
     req.session.panier = [];
 
     res.send(`
