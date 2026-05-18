@@ -15,113 +15,91 @@ app.use(session({
     saveUninitialized: true
 }));
 
-// Middleware pour rendre user disponible dans toutes les vues
 app.use((req, res, next) => {
     res.locals.user = req.session.user;
     next();
 });
 
-// Liste des plats (version stable)
 const plats = [
-    { id: 1, nom: 'Tchep Poulet (Riz au Poulet à la Sénégalaise)', prix: 3500, description: 'Un plat convivial et réconfortant, typique de la cuisine sénégalaise.', image: 'https://saveursdeoumy.com/wp-content/uploads/2025/10/IMG-20251015-WA0013-934x1024.jpg?w=300', categorie: 'plats' },
-    { id: 2, nom: 'Tchep Poisson', prix: 3500, description: 'Un plat riche et extrêmement appétissant, cuit dans une savoureuse sauce à base de tomates, d’oignons et d’épices aromatiques.', image: 'https://issanny.com/wp-content/uploads/2021/09/Tchep-Poisson.jpeg?w=300', categorie: 'plats' },
-    { id: 3, nom: 'Foutou à la sauce graine', prix: 2000, description: 'Le foutou à la sauce graine est un plat savoureux et réconfortant, emblématique de la cuisine ivoirienne', image: 'https://i.pinimg.com/236x/51/6d/1f/516d1f6fe988023f92504b2a8df3474a.jpg?w=300', categorie: 'plats' },
-    { id: 4, nom: 'Placali à la sauce graine', prix: 1500, description: 'Accompagné de sauces graine et kôpè, le placali est bien plus qu un simple accompagnement c est un symbole d identité culturelle', image: 'https://i.pinimg.com/736x/6b/c5/27/6bc527f4d6c3549ba4361a591a3dcfa1.jpg?w=300', categorie: 'plats' },
+    { id: 1, nom: 'Tchep Poulet', prix: 3500, description: 'Plat sénégalais à base de riz et poulet', image: 'https://saveursdeoumy.com/wp-content/uploads/2025/10/IMG-20251015-WA0013-934x1024.jpg?w=300', categorie: 'plats' },
+    { id: 2, nom: 'Tchep Poisson', prix: 3500, description: 'Riz au poisson et légumes', image: 'https://issanny.com/wp-content/uploads/2021/09/Tchep-Poisson.jpeg?w=300', categorie: 'plats' },
+    { id: 3, nom: 'Foutou sauce graine', prix: 2000, description: 'Foutou accompagné de sauce graine', image: 'https://i.pinimg.com/236x/51/6d/1f/516d1f6fe988023f92504b2a8df3474a.jpg?w=300', categorie: 'plats' },
+    { id: 4, nom: 'Placali sauce graine', prix: 1500, description: 'Placali et sauce graine traditionnelle', image: 'https://i.pinimg.com/736x/6b/c5/27/6bc527f4d6c3549ba4361a591a3dcfa1.jpg?w=300', categorie: 'plats' },
     { id: 5, nom: 'Tiramisu', prix: 2500, description: 'Mascarpone, café, boudoirs, cacao', image: 'https://images.pexels.com/photos/1326946/pexels-photo-1326946.jpeg?w=300', categorie: 'desserts' },
-    { id: 6, nom: "Jus d'Orange Frais", prix: 1500, description: 'Orange pressée maison, sans sucre ajouté', image: 'https://i.pinimg.com/736x/e0/e3/88/e0e38815c2c03be364968870631c8ee1.jpg', categorie: 'boissons' },
+    { id: 6, nom: "Jus d'Orange Frais", prix: 1500, description: 'Orange pressée maison', image: 'https://i.pinimg.com/736x/e0/e3/88/e0e38815c2c03be364968870631c8ee1.jpg', categorie: 'boissons' },
     { id: 7, nom: 'Nems Poulet', prix: 2000, description: '3 pièces, sauce nuoc-mâm', image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?w=300', categorie: 'entrees' },
-    { id: 8, nom: 'Bowl Végétarien', prix: 5500, description: 'Quinoa, avocat, légumes grillés, sauce tahini', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
+    { id: 8, nom: 'Bowl Végétarien', prix: 5500, description: 'Quinoa, avocat, légumes grillés', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
     { id: 9, nom: 'Samoussas Légumes', prix: 1800, description: '4 pièces, épices douces', image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?w=300', categorie: 'entrees' },
     { id: 10, nom: 'Fondant Chocolat', prix: 2200, description: 'Cœur coulant, glace vanille', image: 'https://images.pexels.com/photos/1326946/pexels-photo-1326946.jpeg?w=300', categorie: 'desserts' },
     { id: 11, nom: 'Coca-Cola', prix: 1000, description: '33cl, bien frais', image: 'https://i.pinimg.com/736x/db/79/a2/db79a22a3565ccf16a6183d8bebdd426.jpg', categorie: 'boissons' },
-    { id: 12, nom: 'Beignets de Poisson (Fataya)', prix: 2500, description: 'Beignets croustillants au thon épicé, sauce piquante', image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?w=300', categorie: 'entrees' },
-    { id: 13, nom: 'Accras de Morue', prix: 2200, description: 'Beignets de morue aux herbes, 6 pièces', image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?w=300', categorie: 'entrees' },
-    { id: 14, nom: 'Brochettes Mafé', prix: 3000, description: 'Brochettes de bœuf sauce arachide, accompagnées de légumes', image: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?w=300', categorie: 'entrees' },
-    { id: 15, nom: 'Mafé Tieb', prix: 6500, description: 'Riz au poulet, sauce arachide, légumes frais', image: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?w=300', categorie: 'plats' },
-    { id: 16, nom: 'Yassa Poulet', prix: 6000, description: 'Poulet mariné aux oignons, citron et moutarde, riz parfumé', image: 'https://images.pexels.com/photos/1211887/pexels-photo-1211887.jpeg?w=300', categorie: 'plats' },
-    { id: 17, nom: 'Alloco Poisson Braisé', prix: 5500, description: 'Banane plantain frite, poisson braisé, sauce tomate', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
-    { id: 18, nom: 'Kédjénou Poulet', prix: 6200, description: 'Poulet mijoté aux légumes, parfumé aux épices', image: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?w=300', categorie: 'plats' },
-    { id: 19, nom: 'Foutou Sauce Gombo', prix: 5800, description: 'Foutou (igname/banane plantain), sauce gombo au poisson', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
-    { id: 20, nom: 'Dessert Bissap', prix: 2000, description: 'Mousse à base de bissap (hibiscus), gingembre, vanille', image: 'https://images.pexels.com/photos/1326946/pexels-photo-1326946.jpeg?w=300', categorie: 'desserts' },
-    { id: 21, nom: 'Beignets de Patate Douce', prix: 1800, description: 'Beignets moelleux à la patate douce, sucre vanillé', image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?w=300', categorie: 'desserts' },
-    { id: 22, nom: 'Jus de Bissap', prix: 1200, description: "Boisson rafraîchissante à l'hibiscus, menthe et gingembre", image: 'https://i.pinimg.com/736x/52/3e/ba/523eba1c9d68905fcc870c35cdce271d.jpg', categorie: 'boissons' },
-    { id: 23, nom: 'Jus de Gingembre', prix: 1200, description: 'Jus pétillant au gingembre frais, citron vert', image: 'https://i.pinimg.com/1200x/9b/42/cd/9b42cd74edec6e31b8ea1ffb42eb8de9.jpg', categorie: 'boissons' },
-    { id: 24, nom: 'Dolo (Bière de Mil)', prix: 1500, description: 'Bière traditionnelle à base de mil, légère et rafraîchissante', image: 'https://i.pinimg.com/1200x/a6/34/d8/a634d82672317cdf1c8ecf9f0f4b6991.jpg', categorie: 'boissons' }
+    { id: 12, nom: 'Beignets de Poisson', prix: 2500, description: 'Beignets croustillants au thon', image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?w=300', categorie: 'entrees' },
+    { id: 13, nom: 'Accras de Morue', prix: 2200, description: 'Beignets de morue aux herbes', image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?w=300', categorie: 'entrees' },
+    { id: 14, nom: 'Brochettes Mafé', prix: 3000, description: 'Brochettes de bœuf sauce arachide', image: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?w=300', categorie: 'entrees' },
+    { id: 15, nom: 'Mafé Tieb', prix: 6500, description: 'Riz au poulet, sauce arachide', image: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?w=300', categorie: 'plats' },
+    { id: 16, nom: 'Yassa Poulet', prix: 6000, description: 'Poulet mariné aux oignons et citron', image: 'https://images.pexels.com/photos/1211887/pexels-photo-1211887.jpeg?w=300', categorie: 'plats' },
+    { id: 17, nom: 'Alloco Poisson Braisé', prix: 5500, description: 'Banane plantain frite, poisson braisé', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
+    { id: 18, nom: 'Kédjénou Poulet', prix: 6200, description: 'Poulet mijoté aux légumes', image: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?w=300', categorie: 'plats' },
+    { id: 19, nom: 'Foutou Sauce Gombo', prix: 5800, description: 'Foutou, sauce gombo au poisson', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
+    { id: 20, nom: 'Dessert Bissap', prix: 2000, description: 'Mousse à base de bissap', image: 'https://images.pexels.com/photos/1326946/pexels-photo-1326946.jpeg?w=300', categorie: 'desserts' },
+    { id: 21, nom: 'Beignets de Patate Douce', prix: 1800, description: 'Beignets moelleux', image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?w=300', categorie: 'desserts' },
+    { id: 22, nom: 'Jus de Bissap', prix: 1200, description: 'Boisson à l’hibiscus', image: 'https://i.pinimg.com/736x/52/3e/ba/523eba1c9d68905fcc870c35cdce271d.jpg', categorie: 'boissons' },
+    { id: 23, nom: 'Jus de Gingembre', prix: 1200, description: 'Jus pétillant au gingembre', image: 'https://i.pinimg.com/1200x/9b/42/cd/9b42cd74edec6e31b8ea1ffb42eb8de9.jpg', categorie: 'boissons' },
+    { id: 24, nom: 'Dolo', prix: 1500, description: 'Bière traditionnelle de mil', image: 'https://i.pinimg.com/1200x/a6/34/d8/a634d82672317cdf1c8ecf9f0f4b6991.jpg', categorie: 'boissons' }
 ];
 
-// Page d'accueil
 app.get('/', (req, res) => {
     const categorie = req.query.categorie || 'tous';
     let platsFiltres = plats;
-    if (categorie !== 'tous') {
-        platsFiltres = plats.filter(p => p.categorie === categorie);
-    }
+    if (categorie !== 'tous') platsFiltres = plats.filter(p => p.categorie === categorie);
     res.render('index', { plats: platsFiltres, categorieActive: categorie, user: req.session.user });
 });
 
-// API : nombre total d'articles dans le panier (pour le badge)
 app.get('/api/cart-count', (req, res) => {
     const panier = req.session.panier || [];
     let total = 0;
-    for (const item of panier) {
-        total += item.quantite;
-    }
+    for (const item of panier) total += item.quantite;
     res.json({ count: total });
 });
 
-// Ajouter au panier
 app.post('/ajouter-panier', (req, res) => {
     const platId = parseInt(req.body.id);
     const quantite = parseInt(req.body.quantite) || 1;
     if (!req.session.panier) req.session.panier = [];
-    const existingIndex = req.session.panier.findIndex(item => item.id === platId);
-    if (existingIndex !== -1) {
-        req.session.panier[existingIndex].quantite += quantite;
-    } else {
-        req.session.panier.push({ id: platId, quantite: quantite });
-    }
+    const idx = req.session.panier.findIndex(i => i.id === platId);
+    if (idx !== -1) req.session.panier[idx].quantite += quantite;
+    else req.session.panier.push({ id: platId, quantite });
     res.redirect('/panier');
 });
 
-// Page du panier
 app.get('/panier', (req, res) => {
-    const panierItems = req.session.panier || [];
-    const articles = panierItems.map(item => {
+    const items = req.session.panier || [];
+    const articles = items.map(item => {
         const plat = plats.find(p => p.id === item.id);
         return { ...plat, quantite: item.quantite, total: plat.prix * item.quantite };
     }).filter(a => a);
-    let total = 0;
-    articles.forEach(article => total += article.total);
+    const total = articles.reduce((s, a) => s + a.total, 0);
     res.render('panier', { articles, total, user: req.session.user });
 });
 
-// Modifier quantité
 app.post('/panier/modifier-quantite/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const quantite = parseInt(req.body.quantite);
+    const q = parseInt(req.body.quantite);
     if (req.session.panier) {
         const item = req.session.panier.find(i => i.id === id);
         if (item) {
-            if (quantite <= 0) {
-                req.session.panier = req.session.panier.filter(i => i.id !== id);
-            } else {
-                item.quantite = quantite;
-            }
+            if (q <= 0) req.session.panier = req.session.panier.filter(i => i.id !== id);
+            else item.quantite = q;
         }
     }
     res.redirect('/panier');
 });
 
-// Retirer un article du panier
 app.post('/panier/retirer/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    if (req.session.panier) {
-        req.session.panier = req.session.panier.filter(item => item.id !== id);
-    }
+    if (req.session.panier) req.session.panier = req.session.panier.filter(i => i.id !== id);
     res.redirect('/panier');
 });
 
-// ========== PAGE DE CONFIRMATION STYLISÉE (LIVRAISON) ==========
 app.post('/valider-commande', (req, res) => {
     const panierItems = req.session.panier || [];
     if (panierItems.length === 0) return res.redirect('/panier');
@@ -151,47 +129,13 @@ app.post('/valider-commande', (req, res) => {
         <head><title>Commande validée</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
             *{margin:0;padding:0;box-sizing:border-box;}
-            body{
-                font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-                background:linear-gradient(135deg,#fff5eb 0%,#ffe4d6 100%);
-                min-height:100vh;
-                display:flex;
-                justify-content:center;
-                align-items:center;
-                padding:20px;
-            }
-            .card{
-                background:white;
-                border-radius:32px;
-                max-width:550px;
-                width:100%;
-                padding:40px;
-                text-align:center;
-                box-shadow:0 20px 40px rgba(0,0,0,0.1);
-            }
+            body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#fff5eb 0%,#ffe4d6 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+            .card{background:white;border-radius:32px;max-width:550px;width:100%;padding:40px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.1);}
             .card h1{color:#27ae60;font-size:28px;margin-bottom:16px;}
             .numero{font-size:20px;font-weight:bold;color:#e67e22;margin-bottom:24px;}
-            .details{
-                background:#f8f9fa;
-                border-radius:24px;
-                padding:20px;
-                text-align:left;
-                margin:24px 0;
-            }
+            .details{background:#f8f9fa;border-radius:24px;padding:20px;text-align:left;margin:24px 0;}
             .details p{margin:8px 0;font-size:15px;}
-            .btn-retour{
-                background:#e67e22;
-                color:white;
-                border:none;
-                padding:14px 30px;
-                border-radius:50px;
-                font-size:16px;
-                font-weight:600;
-                cursor:pointer;
-                text-decoration:none;
-                display:inline-block;
-                transition:0.2s;
-            }
+            .btn-retour{background:#e67e22;color:white;border:none;padding:14px 30px;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:0.2s;}
             .btn-retour:hover{background:#d35400;transform:scale(1.02);}
             .logo{width:60px;margin-bottom:20px;border-radius:50%;}
             @media (max-width:550px){.card{padding:24px;}.card h1{font-size:24px;}}
@@ -199,7 +143,7 @@ app.post('/valider-commande', (req, res) => {
         </head>
         <body>
             <div class="card">
-                <img src="/images/logo.png" alt="TONKPIRESTO" class="logo">
+                <img src="/images/logo.png" class="logo">
                 <h1>✅ Commande validée !</h1>
                 <div class="numero">📦 N° ${commande.id}</div>
                 <div class="details">
@@ -216,7 +160,6 @@ app.post('/valider-commande', (req, res) => {
     `);
 });
 
-// ========== STRIPE : PAIEMENT EN LIGNE ==========
 app.post('/creer-paiement', async (req, res) => {
     const panierItems = req.session.panier || [];
     if (panierItems.length === 0) return res.redirect('/panier');
@@ -236,7 +179,7 @@ app.post('/creer-paiement', async (req, res) => {
         });
         res.redirect(sessionStripe.url);
     } catch (error) {
-        res.send(`<h1>❌ Erreur de paiement</h1><p>${error.message}</p><a href="/panier"><button>Retour</button></a>`);
+        res.send(`<h1>❌ Erreur paiement</h1><p>${error.message}</p><a href="/panier"><button>Retour</button></a>`);
     }
 });
 
@@ -266,50 +209,15 @@ app.get('/succes-paiement', async (req, res) => {
         <head><title>Paiement réussi</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
             *{margin:0;padding:0;box-sizing:border-box;}
-            body{
-                font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-                background:linear-gradient(135deg,#fff5eb 0%,#ffe4d6 100%);
-                min-height:100vh;
-                display:flex;
-                justify-content:center;
-                align-items:center;
-                padding:20px;
-            }
-            .card{
-                background:white;
-                border-radius:32px;
-                max-width:550px;
-                width:100%;
-                padding:40px;
-                text-align:center;
-                box-shadow:0 20px 40px rgba(0,0,0,0.1);
-            }
+            body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#fff5eb 0%,#ffe4d6 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+            .card{background:white;border-radius:32px;max-width:550px;width:100%;padding:40px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.1);}
             .card h1{color:#27ae60;font-size:28px;margin-bottom:16px;}
             .numero{font-size:20px;font-weight:bold;color:#e67e22;margin-bottom:24px;}
-            .details{
-                background:#f8f9fa;
-                border-radius:24px;
-                padding:20px;
-                text-align:left;
-                margin:24px 0;
-            }
+            .details{background:#f8f9fa;border-radius:24px;padding:20px;text-align:left;margin:24px 0;}
             .details p{margin:8px 0;font-size:15px;}
-            .btn-retour{
-                background:#e67e22;
-                color:white;
-                border:none;
-                padding:14px 30px;
-                border-radius:50px;
-                font-size:16px;
-                font-weight:600;
-                cursor:pointer;
-                text-decoration:none;
-                display:inline-block;
-                transition:0.2s;
-            }
+            .btn-retour{background:#e67e22;color:white;border:none;padding:14px 30px;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:0.2s;}
             .btn-retour:hover{background:#d35400;transform:scale(1.02);}
             .logo{width:60px;margin-bottom:20px;border-radius:50%;}
-            @media (max-width:550px){.card{padding:24px;}.card h1{font-size:24px;}}
         </style>
         </head>
         <body>
@@ -330,7 +238,6 @@ app.get('/succes-paiement', async (req, res) => {
     `);
 });
 
-// ========== WAVE : PAIEMENT MOBILE ==========
 app.post('/valider-commande-wave', (req, res) => {
     const panierItems = req.session.panier || [];
     if (panierItems.length === 0) return res.redirect('/panier');
@@ -357,50 +264,15 @@ app.post('/valider-commande-wave', (req, res) => {
         <head><title>Commande Wave</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
             *{margin:0;padding:0;box-sizing:border-box;}
-            body{
-                font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-                background:linear-gradient(135deg,#fff5eb 0%,#ffe4d6 100%);
-                min-height:100vh;
-                display:flex;
-                justify-content:center;
-                align-items:center;
-                padding:20px;
-            }
-            .card{
-                background:white;
-                border-radius:32px;
-                max-width:550px;
-                width:100%;
-                padding:40px;
-                text-align:center;
-                box-shadow:0 20px 40px rgba(0,0,0,0.1);
-            }
+            body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#fff5eb 0%,#ffe4d6 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+            .card{background:white;border-radius:32px;max-width:550px;width:100%;padding:40px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.1);}
             .card h1{color:#4caf50;font-size:28px;margin-bottom:16px;}
             .numero{font-size:20px;font-weight:bold;color:#e67e22;margin-bottom:24px;}
-            .details{
-                background:#f8f9fa;
-                border-radius:24px;
-                padding:20px;
-                text-align:left;
-                margin:24px 0;
-            }
+            .details{background:#f8f9fa;border-radius:24px;padding:20px;text-align:left;margin:24px 0;}
             .details p{margin:8px 0;font-size:15px;}
-            .btn-retour{
-                background:#e67e22;
-                color:white;
-                border:none;
-                padding:14px 30px;
-                border-radius:50px;
-                font-size:16px;
-                font-weight:600;
-                cursor:pointer;
-                text-decoration:none;
-                display:inline-block;
-                transition:0.2s;
-            }
+            .btn-retour{background:#e67e22;color:white;border:none;padding:14px 30px;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:0.2s;}
             .btn-retour:hover{background:#d35400;transform:scale(1.02);}
             .logo{width:60px;margin-bottom:20px;border-radius:50%;}
-            @media (max-width:550px){.card{padding:24px;}.card h1{font-size:24px;}}
         </style>
         </head>
         <body>
@@ -421,7 +293,6 @@ app.post('/valider-commande-wave', (req, res) => {
     `);
 });
 
-// Notes et avis
 app.post('/ajouter-avis/:platId', (req, res) => {
     const platId = parseInt(req.params.platId);
     const { note, commentaire } = req.body;
@@ -439,15 +310,11 @@ app.get('/api/avis/:platId', (req, res) => {
     let avis = [];
     if (fs.existsSync('./data/avis.json')) avis = JSON.parse(fs.readFileSync('./data/avis.json', 'utf8'));
     const avisPlat = avis.filter(a => a.platId === platId);
-    const moyenne = avisPlat.length > 0 ? avisPlat.reduce((sum, a) => sum + a.note, 0) / avisPlat.length : 0;
+    const moyenne = avisPlat.length ? avisPlat.reduce((s, a) => s + a.note, 0) / avisPlat.length : 0;
     res.json({ avis: avisPlat, moyenne: moyenne.toFixed(1), total: avisPlat.length });
 });
 
-// Routes
 app.use('/auth', require('./routes/auth'));
 app.use('/admin', require('./routes/admin'));
 
-// Démarrage
-app.listen(3000, () => {
-    console.log('Serveur démarré sur http://localhost:3000');
-});
+app.listen(3000, () => console.log('Serveur démarré sur http://localhost:3000'));
