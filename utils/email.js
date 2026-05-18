@@ -1,15 +1,21 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 
-// Configuration SMTP Brevo
+// Configuration SMTP Brevo (port 465 avec SSL, plus fiable sur Render)
 const transporter = nodemailer.createTransport({
     host: 'smtp-relay.brevo.com',
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-    }
+    },
+    tls: {
+        rejectUnauthorized: false
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000
 });
 
 // Email de confirmation de commande
