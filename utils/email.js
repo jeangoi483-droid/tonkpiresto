@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Fonction pour envoyer un email de confirmation
+// Email de confirmation de commande
 async function envoyerConfirmationCommande(email, commande, telephone, adresse) {
     const articlesHtml = commande.articles.map(a => `
         <tr>
@@ -74,4 +74,47 @@ async function envoyerConfirmationCommande(email, commande, telephone, adresse) 
     }
 }
 
-module.exports = { envoyerConfirmationCommande };
+// Email de bienvenue à l'inscription
+async function envoyerEmailBienvenue(email, nom) {
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="UTF-8"></head>
+        <body style="font-family:Arial; background:#f5f5f5; padding:20px;">
+            <div style="max-width:500px; margin:0 auto; background:white; border-radius:15px; overflow:hidden;">
+                <div style="background:#27ae60; padding:20px; text-align:center; color:white;">
+                    <h1>🍕 Bienvenue ${nom} !</h1>
+                </div>
+                <div style="padding:20px;">
+                    <p>Merci de vous être inscrit sur TONKPIRESTO !</p>
+                    <p>Vous pouvez dès maintenant :</p>
+                    <ul>
+                        <li>📋 Parcourir notre menu</li>
+                        <li>🛒 Passer des commandes</li>
+                        <li>⭐ Donner votre avis</li>
+                    </ul>
+                    <div style="text-align:center; margin-top:25px;">
+                        <a href="https://tonkpiresto.onrender.com" style="background:#e67e22; color:white; padding:12px 25px; border-radius:25px; text-decoration:none;">Commander maintenant</a>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+
+    try {
+        await transporter.sendMail({
+            from: `"TONKPIRESTO" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: '🍕 Bienvenue chez TONKPIRESTO !',
+            html: html
+        });
+        console.log(`✅ Email de bienvenue envoyé à ${email}`);
+        return true;
+    } catch (error) {
+        console.error('❌ Erreur email bienvenue:', error);
+        return false;
+    }
+}
+
+module.exports = { envoyerConfirmationCommande, envoyerEmailBienvenue };
