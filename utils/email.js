@@ -1,21 +1,13 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 
-// Configuration SMTP Brevo (port 465 avec SSL, plus fiable sur Render)
+// Configuration Gmail (mot de passe d'application)
 const transporter = nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 465,
-    secure: true,
+    service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false
-    },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000
+    }
 });
 
 // Email de confirmation de commande
@@ -47,8 +39,10 @@ async function envoyerConfirmationCommande(email, commande, telephone, adresse) 
                     <table style="width:100%; border-collapse:collapse;">
                         <thead><tr style="background:#f0f0f0;"><th>Article</th><th>Qté</th><th>Total</th></tr></thead>
                         <tbody>${articlesHtml}</tbody>
-                        <tfoot><tr><td colspan="2" style="text-align:right;"><strong>Total :</strong></td><td><strong>${commande.total.toLocaleString()} F CFA</strong></td></tr></tfoot>
-                    </table>
+                        <tfoot>
+                            <tr><td colspan="2" style="text-align:right;"><strong>Total :</strong></td><td><strong>${commande.total.toLocaleString()} F CFA</strong></td></tr>
+                        </tfoot>
+                     </table>
                     
                     <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin:20px 0;">
                         <p><strong>📞 Téléphone :</strong> ${telephone}</p>
