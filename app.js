@@ -4,6 +4,7 @@ const session = require('express-session');
 const fs = require('fs');
 const stripe = require('stripe')('ta_clé_secrète_stripe'); // 🔑 REMPLACE PAR TA VRAIE CLÉ STRIPE
 const { envoyerConfirmationCommande, envoyerEmailBienvenue } = require('./utils/email');
+const { envoyerConfirmationWhatsApp } = require('./utils/whatsapp');
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -100,6 +101,7 @@ app.post('/panier/retirer/:id', (req, res) => {
     res.redirect('/panier');
 });
 
+// Valider la commande (paiement à la livraison) avec WhatsApp
 app.post('/valider-commande', (req, res) => {
     const panierItems = req.session.panier || [];
     if (panierItems.length === 0) return res.redirect('/panier');
@@ -120,7 +122,17 @@ app.post('/valider-commande', (req, res) => {
     if (fs.existsSync('./data/commandes.json')) commandes = JSON.parse(fs.readFileSync('./data/commandes.json', 'utf8'));
     commandes.push(commande);
     fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
-    if (req.session.user?.email) envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
+    
+    // Email
+    if (req.session.user?.email) {
+        envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
+    }
+    
+    // WhatsApp
+    if (telephone) {
+        envoyerConfirmationWhatsApp(telephone, commande).catch(err => console.error('Erreur WhatsApp:', err));
+    }
+    
     req.session.panier = [];
 
     res.send(`
@@ -201,8 +213,8 @@ app.get('/succes-paiement', async (req, res) => {
     commandes.push(commande);
     fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
     if (req.session.user?.email) {
-    envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
-}
+        envoyerConfirmationCommande(req.session.user.email, commande, 'Non renseigné', 'Non renseignée').catch(err => console.error(err));
+    }
     req.session.panier = [];
 
     res.send(`
@@ -257,7 +269,9 @@ app.post('/valider-commande-wave', (req, res) => {
     if (fs.existsSync('./data/commandes.json')) commandes = JSON.parse(fs.readFileSync('./data/commandes.json', 'utf8'));
     commandes.push(commande);
     fs.writeFileSync('./data/commandes.json', JSON.stringify(commandes, null, 2));
-    if (req.session.user?.email) envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
+    if (req.session.user?.email) {
+        envoyerConfirmationCommande(req.session.user.email, commande, telephone, adresse).catch(err => console.error(err));
+    }
     req.session.panier = [];
 
     res.send(`
