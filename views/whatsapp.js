@@ -1,8 +1,8 @@
 const twilio = require('twilio');
 
 // Configuration Twilio
-const accountSid = 'AC9cf547c40890be41313a5170658af17b';  // ← Remplace par ton Account SID
-const authToken = '42263728e75c86140449d0828039fd12';     // ← Remplace par ton Auth Token
+const accountSid = 'ACbc4279456d8c2fd655fd2373322c4520';  // ← Remplace par ton Account SID
+const authToken = '776e74c52482df65a791d2974c1ff7ba';     // ← Remplace par ton Auth Token
 const whatsappFrom = 'whatsapp:+14155238886';              // ← Numéro sandbox Twilio
 
 const client = twilio(accountSid, authToken);
