@@ -1,12 +1,14 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 
-// Configuration Gmail (mot de passe d'application)
+// Configuration SendGrid (fonctionne parfaitement sur Render)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.sendgrid.net',
+    port: 587,
+    secure: false,
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: 'apikey',
+        pass: process.env.SENDGRID_API_KEY
     }
 });
 
@@ -42,7 +44,7 @@ async function envoyerConfirmationCommande(email, commande, telephone, adresse) 
                         <tfoot>
                             <tr><td colspan="2" style="text-align:right;"><strong>Total :</strong></td><td><strong>${commande.total.toLocaleString()} F CFA</strong></td></tr>
                         </tfoot>
-                     </table>
+                    </table>
                     
                     <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin:20px 0;">
                         <p><strong>📞 Téléphone :</strong> ${telephone}</p>
@@ -61,7 +63,7 @@ async function envoyerConfirmationCommande(email, commande, telephone, adresse) 
 
     try {
         await transporter.sendMail({
-            from: `"TONKPIRESTO" <${process.env.EMAIL_USER}>`,
+            from: `"TONKPIRESTO" <jeanseverin41@gmail.com>`,
             to: email,
             subject: `✅ Commande confirmée n°${commande.id}`,
             html: html
@@ -104,7 +106,7 @@ async function envoyerEmailBienvenue(email, nom) {
 
     try {
         await transporter.sendMail({
-            from: `"TONKPIRESTO" <${process.env.EMAIL_USER}>`,
+            from: `"TONKPIRESTO" <jeanseverin41@gmail.com>`,
             to: email,
             subject: '🍕 Bienvenue chez TONKPIRESTO !',
             html: html
