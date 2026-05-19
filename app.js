@@ -29,7 +29,7 @@ const plats = [
     { id: 5, nom: 'Tiramisu', prix: 2500, description: 'Mascarpone, café, boudoirs, cacao', image: 'https://images.pexels.com/photos/1326946/pexels-photo-1326946.jpeg?w=300', categorie: 'desserts' },
     { id: 6, nom: "Jus d'Orange Frais", prix: 1500, description: 'Orange pressée maison', image: 'https://i.pinimg.com/736x/e0/e3/88/e0e38815c2c03be364968870631c8ee1.jpg', categorie: 'boissons' },
     { id: 7, nom: 'Nems Poulet', prix: 2000, description: '3 pièces, sauce nuoc-mâm', image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?w=300', categorie: 'entrees' },
-    { id: 8, nom: 'Bowl Végétarien', prix: 5500, description: 'Quinoa, avocat, légumes grillés', image: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?w=300', categorie: 'plats' },
+    { id: 8, nom: 'Garba Ivoirien', prix: 5500, description: 'Le garba est un plat populaire ivoirien à base de semoule de manioc, appelée attiéké, accompagnée de thon.', image: 'https://i.pinimg.com/736x/d7/5d/7a/d75d7a4bd06fd11e1d1f9f62b4f2b9f2.jpg?w=300', categorie: 'plats' },
     { id: 9, nom: 'Samoussas Légumes', prix: 1800, description: '4 pièces, épices douces', image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?w=300', categorie: 'entrees' },
     { id: 10, nom: 'Fondant Chocolat', prix: 2200, description: 'Cœur coulant, glace vanille', image: 'https://images.pexels.com/photos/1326946/pexels-photo-1326946.jpeg?w=300', categorie: 'desserts' },
     { id: 11, nom: 'Coca-Cola', prix: 1000, description: '33cl, bien frais', image: 'https://i.pinimg.com/736x/db/79/a2/db79a22a3565ccf16a6183d8bebdd426.jpg', categorie: 'boissons' },
